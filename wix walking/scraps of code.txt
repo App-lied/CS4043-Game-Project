@@ -1,0 +1,57 @@
+local buttonGroup = display.newGroup()
+ 
+local leftButton = display.newImageRect( buttonGroup, "leftButton.png", 64, 64 )
+leftButton.x, leftButton.y = 60, display.contentHeight-60
+leftButton.canSlideOn = true
+leftButton.ID = "left"
+ 
+local rightButton = display.newImageRect( buttonGroup, "rightButton.png", 64, 64 )
+rightButton.x, rightButton.y = 136, display.contentHeight-60
+rightButton.canSlideOn = true
+rightButton.ID = "right"
+
+// move with mouse click on position
+
+local function onTouch(event)
+	if(event.phase == "ended") then
+	transition.to(animation, {x=event.x, y=event.y})
+	end
+end
+Runtime: addEventListener("touch", onTouch)
+
+//some walking code if simple wya doesn't work
+local function onKeyEvent(event)
+	local pressKey = onKeyEvent(event)
+	if (event.phase == "began") then
+			if(pressKey~= nil) then
+				if not (event.keyName == "a" ) then	
+					animation.deltaPerFrame = {-2, 0}
+				else if(event.keyName == "d") then
+					animation.deltaPerFrame = {2, 0}	
+			
+		end
+	end
+end
+Runtime:addEventListener ("key", onKeyEvent)
+
+// trying keybinding
+local function onKeyEvent(event)
+	local pressKey = onKeyEvent(event)
+	if (event.phase == "began") then
+		if(pressKey~= nil) then
+			if (event.keyName == "a" ) then	
+				animation.deltaPerFrame = {-2, 0}
+			elseif(event.keyName == "d") then
+				animation.deltaPerFrame = {2, 0}	
+			end
+		end
+		return true
+	end
+	elseif (event.phase == "moved") then
+	elseif (event.phase == "ended") then
+		animation.deltaPerFrame  = {0,0}
+		return true
+	end
+end
+end
+Runtime:addEventListener ("key", onKeyEvent)
