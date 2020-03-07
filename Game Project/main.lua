@@ -3,10 +3,12 @@ local platform
 local ceiling
 local player
 local reticle
+local laser
 local hook
 local aIsPressed 
 local dIsPressed 
 local spaceIsPressed 
+local inAir
 
 
 physics = require("physics")
@@ -58,8 +60,44 @@ local function onMouseAction(event)
 	reticle.y = event.y
 	
 	if event.isPrimaryButtonDown then
-		--code to fire bullet
+		timer.performWithDelay(2000,fireLaser())
 	end
+end
+
+function fireLaser()
+    local newLaser = display.newImageRect("laser.png", 15, 40)
+    newLaser.isBullet = true
+    newLaser.myName = "laser"
+
+    newLaser.x = player.x
+    newLaser.y = player.y
+    newLaser:toBack()
+	
+	local y1 = player.y
+	local x1 = player.x
+	
+      local length = math.sqrt((reticle.x-x1)^2+(reticle.y-y1)^2)
+      local degrees = math.deg(math.atan(math.abs(reticle.y-y1)/math.abs(reticle.x-x1)))
+      if (reticle.y<y1) then
+        if(reticle.x>x1) then
+          newLaser.rotation = 180-degrees+90
+        else
+          newLaser.rotation = degrees+90
+        end
+      end
+      if (reticle.y>=y1) then
+        if(reticle.x>x1) then
+          newLaser.rotation = degrees+90
+        else
+          newLaser.rotation = 360-degrees+90
+        end
+      end
+
+      local x2 = (5*reticle.x-(4*x1))/(1)
+      local y2 = (5*reticle.y-(4*y1))/(1)
+      transition.to( newLaser, {x=x2, y=y2, time=length*2,
+          onComplete = function()display.remove(newLaser)end
+      })
 end
 
 local function fireHook()
@@ -74,7 +112,15 @@ end
 
 local function onHookCollision(event)
 	if (not (event.other == player)) then
-		transition.to(player, {x = hook.x, y = hook.y, time = 300})
+		transition.to(player, {x = event.target.x, y = event.target.y, time = 300})
+	end
+end
+
+local function onLanding(event)	 
+	if(event.phase == "began") then
+		inAir = false
+	elseif(event.phase == "ended") then
+		inAir = true
 	end
 end
 
@@ -89,7 +135,7 @@ local function movePlayer(event)
 		elseif (event.keyName == "a") then
 			player.deltaPerFrame = {-3.5, 0}
 			aIsPressed = true
-		elseif (event.keyName == "space") then
+		elseif (event.keyName == "space" and not inAir) then
 			player:applyLinearImpulse(0, -0.2, player.x, player.y)
 			spaceIsPressed = true
 		elseif (event.keyName == "e") then
@@ -112,4 +158,5 @@ Runtime:addEventListener("enterFrame", frameUpdate)
 Runtime:addEventListener("key", movePlayer)
 Runtime:addEventListener("mouse", onMouseAction)
 hook:addEventListener("collision", onHookCollision)
+player:addEventListener("collision", onLanding)
 		
