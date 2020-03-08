@@ -9,6 +9,7 @@ local aIsPressed
 local dIsPressed 
 local spaceIsPressed 
 local inAir
+local isFiring
 
 
 physics = require("physics")
@@ -53,6 +54,10 @@ local function frameUpdate()
 	
 	hook.x = player.x
 	hook.y = player.y
+	
+	if (isFiring) then
+		fireLaser()
+	end
 end
 
 local function onMouseAction(event)
@@ -60,7 +65,9 @@ local function onMouseAction(event)
 	reticle.y = event.y
 	
 	if event.isPrimaryButtonDown then
-		timer.performWithDelay(2000,fireLaser())
+		isFiring = true
+	else 
+		isFiring = false
 	end
 end
 
