@@ -14,6 +14,7 @@ local aIsPressed
 local dIsPressed 
 local rIsPressed
 local spaceIsPressed 
+local leftClickIsPressed
 local inAir
 local score
 local ammo
@@ -37,6 +38,7 @@ local gun2
 local gun1Img
 local gun2Img
 
+
 local zombiesTable = {}
 local backGroup = display.newGroup()
 local mainGroup = display.newGroup()
@@ -55,7 +57,6 @@ local vending2 = display.newRect(backGroup, 15,400,50,50)
 vending2:setFillColor(0,0,1)
 
 platform = display.newImageRect(backGroup, "platform.png", 1000, 50)
-platform.myName = "groundPlatform"
 platform.x = display.contentCenterX
 platform.y = display.contentHeight - 25
 
@@ -64,7 +65,6 @@ ceiling.x = display.contentCenterX
 ceiling.y = 25
 
 player = display.newImageRect(mainGroup, "square.png", 50, 50)
-player.myName = "playerCharacter"
 player.x = display.contentCenterX
 player.y = display.contentCenterY
 
@@ -83,7 +83,6 @@ physics.addBody(ceiling, "static", {bounce = 0.0})
 
 physics.addBody(hook, "dynamic", {isSensor = true})
 hook.isBodyActive = false
-hook.isSensor = true
 hook.isBullet = true
 
 player.deltaPerFrame = {0, 0} --https://docs.coronalabs.com/tutorial/events/continuousActions/index.html
@@ -97,15 +96,16 @@ local function frameUpdate()
 end
 
 --Reticle
+leftClickIsPressed = false
 local function onMouseAction(event)
 	reticle.x = event.x
 	reticle.y = event.y
-end
-
-local function onTouchAction(event)
-	--if 
-		timer.performWithDelay({delay = 500},fireLaser())
-	--end
+	
+	if event.isPrimaryButtonDown then
+		leftClickIsPressed = true
+	else
+		leftClickIsPressed = false
+	end
 end
 
 -- HUD 
@@ -155,11 +155,11 @@ ak47 = "ak47"
 currentGun = ruger
 currentGunClip = 7
 gun1FireSpeed = 200
-gun1reloadSpeed = 500
+gun1ReloadSpeed = 500
 gun2FireSpeed = 50
 gun2ReloadSpeed = 750
-fireSpeed = 200
-reloadSpeed = 500
+fireSpeed = gun1FireSpeed
+reloadSpeed = gun1ReloadSpeed
 
 gun1Ammo = 7
 gun1Res = 56
@@ -177,12 +177,12 @@ gunN2 = false
 gun1Img = rugerImg
 gun2Img = uziImg
 
-local purchased = false
-
+local uziPurchased = false
+local akPurchased = false
 
 --uzi
 local function uziEquiped()
-	if purchased == true then
+	if uziPurchased == true then
 		currentGun = uzi
 		ammo = 32
 		reserve = 96
@@ -215,7 +215,7 @@ end
 local function uziPurchase()
 	if score >= 500 then
 		if (reticle.x > -15) and (reticle.x < 50) and (reticle.y > 375) and (reticle.y < 425) then
-			purchased = true
+			uziPurchased = true
 			uziEquiped()
 			transition.to(loadBall, {x=425, y=425, time = 50})
 			transition.to(loadBall, {delay = 50, x=520, y=425, time = 50})
@@ -228,7 +228,7 @@ end
 
 --ak47
 local function ak47Equiped()
-	if purchased == true then
+	if akPurchased == true then
 		currentGun = ak47 
 		ammo = 30
 		reserve = 120
@@ -259,7 +259,7 @@ end
 local function ak47Purchase()
 	if score >= 500 then
 		if (reticle.x > 275) and (reticle.x < 325) and (reticle.y > 375) and (reticle.y < 425) then
-			purchased = true
+			akPurchased = true
 			ak47Equiped()
 			transition.to(loadBall, {x=425, y=425, time = 50})
 			transition.to(loadBall, {delay = 50, x=520, y=425, time = 50})
@@ -317,57 +317,56 @@ end
 reload = false
 	
 function fireLaser()
-
-	if ammo < 1 then
-		reload = true
-	elseif ammo > 1 then
-		reload = false
-	end
-	
-	if (loadBall.x == 520) then
-	if reload == false then
-		ammo = ammo - 1
-		ammoText.text = "" ..ammo.. "/" ..reserve
-
-		local newLaser = display.newImageRect(mainGroup, "laser.png", 15, 40)
-		physics.addBody(newLaser, "dynamic", {isSensor = true})
-		newLaser.isBullet = true
-		newLaser.myName = "laser"
-
-		newLaser.x = player.x
-		newLaser.y = player.y
-		newLaser:toBack()
-	
-		local y1 = player.y
-		local x1 = player.x
-	
-		local length = math.sqrt((reticle.x-x1)^2+(reticle.y-y1)^2)
-		local degrees = math.deg(math.atan(math.abs(reticle.y-y1)/math.abs(reticle.x-x1)))
-		if (reticle.y<y1) then
-			if(reticle.x>x1) then
-          newLaser.rotation = 180-degrees+90
-			else
-			newLaser.rotation = degrees+90
-			end
-		end
-		if (reticle.y>=y1) then
-			if(reticle.x>x1) then
-			newLaser.rotation = degrees+90
-			else
-			newLaser.rotation = 360-degrees+90
-			end
+	if leftClickIsPressed then
+		if ammo < 1 then
+			reload = true
+		elseif ammo > 0 then
+			reload = false
 		end
 		
-		local x2 = (5*reticle.x-(4*x1))/(1)
-		local y2 = (5*reticle.y-(4*y1))/(1)
-		transition.to( newLaser, {x=x2, y=y2, time=length*2,
-			onComplete = function()display.remove(newLaser)end
-		})
-		
-		fireSpeed = gun1FireSpeed
-		transition.to(loadBall, {x=425, y=425, time = fireSpeed})
-				transition.to(loadBall, {delay = fireSpeed, x=520, y=425, time = fireSpeed})
-	end	
+		if (loadBall.x == 520) then
+			if reload == false then
+				ammo = ammo - 1
+				ammoText.text = "" ..ammo.. "/" ..reserve
+
+				local newLaser = display.newImageRect(mainGroup, "laser.png", 15, 40)
+				physics.addBody(newLaser, "dynamic", {isSensor = true})
+				newLaser.isBullet = true
+				newLaser.myName = "laser"
+
+				newLaser.x = player.x
+				newLaser.y = player.y
+				newLaser:toBack()
+			
+				local y1 = player.y
+				local x1 = player.x
+			
+				local length = math.sqrt((reticle.x-x1)^2+(reticle.y-y1)^2)
+				local degrees = math.deg(math.atan(math.abs(reticle.y-y1)/math.abs(reticle.x-x1)))
+				if (reticle.y<y1) then
+					if(reticle.x>x1) then
+				  newLaser.rotation = 180-degrees+90
+					else
+					newLaser.rotation = degrees+90
+					end
+				end
+				if (reticle.y>=y1) then
+					if(reticle.x>x1) then
+					newLaser.rotation = degrees+90
+					else
+					newLaser.rotation = 360-degrees+90
+					end
+				end
+								local x2 = (5*reticle.x-(4*x1))/(1)
+				local y2 = (5*reticle.y-(4*y1))/(1)
+				transition.to( newLaser, {x=x2, y=y2, time=length*2,
+					onComplete = function()display.remove(newLaser)end
+				})
+				
+				transition.to(loadBall, {x=425, y=425, time = fireSpeed})
+						transition.to(loadBall, {delay = fireSpeed, x=520, y=425, time = fireSpeed})
+			end	
+		end
 	end
 end
 
@@ -600,14 +599,13 @@ end
 Runtime:addEventListener("enterFrame", frameUpdate)
 Runtime:addEventListener("key", movePlayer)
 Runtime:addEventListener("mouse", onMouseAction)
-Runtime:addEventListener("tap", onTouchAction)
 Runtime:addEventListener("collision", onCollision)
 hook:addEventListener("collision", onHookCollision)
 player:addEventListener("collision", onLanding)
+gameLoopTimer = timer.performWithDelay(fireSpeed, fireLaser, 0)
 gameLoopTimer = timer.performWithDelay(100, gameLoopReload, 0)
 gameLoopTimer = timer.performWithDelay(100, gameLoopEquiped, 0)
 timer.performWithDelay(1000, reloadGun(), 0)
 gameLoopTimer = timer.performWithDelay(100, gameLoopUziReload, 0)
 gameLoopTimer = timer.performWithDelay(50, gameLoopPurchase, 0)
 gameLoopTimer = timer.performWithDelay(2000, spawnZombie, 0)
-spawnZombie()
