@@ -210,6 +210,7 @@ local function uziEquiped()
 			rugerImg.isVisible = false
 			uziImg.isVisible = true
 			ak47Img.isVisible = false
+			mossbergImg.isVisible = false
 		elseif (gunN1 == false) and (gunN2 == true) then
 			gun2 = "uzi"
 			gun2Img = uziImg
@@ -221,6 +222,7 @@ local function uziEquiped()
 			rugerImg.isVisible = false
 			uziImg.isVisible = true
 			ak47Img.isVisible = false
+			mossbergImg.isVisible = false
 		end
 		ammoText.text = ammo.. "/" ..reserve
 	end
@@ -256,6 +258,7 @@ local function ak47Equiped()
 			rugerImg.isVisible = false
 			uziImg.isVisible = false
 			ak47Img.isVisible = true
+			mossbergImg.isVisible = false
 		elseif (gunN1 == false) and (gunN2 == true) then
 			gun2 = "ak47"
 			gun2Img = ak47Img
@@ -265,6 +268,7 @@ local function ak47Equiped()
 			rugerImg.isVisible = false
 			uziImg.isVisible = false
 			ak47Img.isVisible = true
+			mossbergImg.isVisible = false
 		end
 		ammoText.text = ammo.. "/" ..reserve
 	end
@@ -355,6 +359,8 @@ local function randPurchase()
 	if score >= 1000 then
 		if (reticle.x > 275) and (reticle.x < 325) and (reticle.y > 55) and (reticle.y < 105) then
 			purchased = true
+			score = score - 1000
+			scoreText.text = "score:" ..score
 			local randGun = math.random(3)
 			if randGun == 1 then
 				ak47RandImg.isVisible = true
