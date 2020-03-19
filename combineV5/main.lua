@@ -1,8 +1,3 @@
------------------------------------------------------------------------------------------
---
--- main.lua
---
------------------------------------------------------------------------------------------
 local physics
 local platform
 local ceiling
@@ -13,7 +8,6 @@ local hook
 local aIsPressed 
 local dIsPressed 
 local rIsPressed
-local spaceIsPressed 
 local leftClickIsPressed
 local inAir
 local score
@@ -40,6 +34,8 @@ local gun2Img
 
 
 local zombiesTable = {}
+local zombiesHealth = {}
+
 local backGroup = display.newGroup()
 local mainGroup = display.newGroup()
 local uiGroup = display.newGroup()
@@ -55,6 +51,12 @@ vending1:setFillColor(0,1,0)
 
 local vending2 = display.newRect(backGroup, 15,400,50,50)
 vending2:setFillColor(0,0,1)
+
+local vending3 = display.newRect(backGroup, 15,80,50,50)
+vending3:setFillColor(1,0,0)
+
+local vendingRand = display.newRect(backGroup, 300,80,50,50)
+vendingRand:setFillColor(0,0.8,0.7)
 
 platform = display.newImageRect(backGroup, "platform.png", 1000, 50)
 platform.x = display.contentCenterX
@@ -142,6 +144,13 @@ ak47Img.y = 420
 ak47Img:toBack()
 ak47Img.isVisible = false
 
+-- mossberg image needs to be changed
+local mossbergImg = display.newImageRect(uiGroup, "mossberg.png", 150, 150 ) 
+mossbergImg.x = 540
+mossbergImg.y = 420
+mossbergImg:toBack()
+mossbergImg.isVisible = false
+
 local function firerate()
 	if reload == true then
 		reload = false
@@ -152,6 +161,7 @@ end
 ruger = "ruger"
 uzi = "uzi"
 ak47 = "ak47"
+mossberg = "mossberg"
 currentGun = ruger
 currentGunClip = 7
 gun1FireSpeed = 200
@@ -196,6 +206,7 @@ local function uziEquiped()
 			rugerImg.isVisible = false
 			uziImg.isVisible = true
 			ak47Img.isVisible = false
+			mossbergImg.isVisible = false
 		elseif (gunN1 == false) and (gunN2 == true) then
 			gun2 = "uzi"
 			gun2Img = uziImg
@@ -207,6 +218,7 @@ local function uziEquiped()
 			rugerImg.isVisible = false
 			uziImg.isVisible = true
 			ak47Img.isVisible = false
+			mossbergImg.isVisible = false
 		end
 		ammoText.text = ammo.. "/" ..reserve
 	end
@@ -242,6 +254,7 @@ local function ak47Equiped()
 			rugerImg.isVisible = false
 			uziImg.isVisible = false
 			ak47Img.isVisible = true
+			mossbergImg.isVisible = false
 		elseif (gunN1 == false) and (gunN2 == true) then
 			gun2 = "ak47"
 			gun2Img = ak47Img
@@ -251,6 +264,7 @@ local function ak47Equiped()
 			rugerImg.isVisible = false
 			uziImg.isVisible = false
 			ak47Img.isVisible = true
+			mossbergImg.isVisible = false
 		end
 		ammoText.text = ammo.. "/" ..reserve
 	end
@@ -269,13 +283,119 @@ local function ak47Purchase()
 		end
 	end
 end
+--mossberg
+local function mossbergEquiped()
+	if purchased == true then
+		currentGun = mossberg
+		ammo = 6
+		reserve = 30
+		currentGunClip = 6
+		if (gunN1 == true) and (gunN2 == false) then
+			gun1 = "mossberg"
+			gun1Img = mossbergImg
+			gun1Clip = 6
+			gun1FireSpeed = 1000
+			gun1ReloadSpeed = 2000
+			--make this an image sheet
+			rugerImg.isVisible = false
+			uziImg.isVisible = false
+			ak47Img.isVisible = false
+			mossbergImg.isVisible = true
+		elseif (gunN1 == false) and (gunN2 == true) then
+			gun2 = "mossberg"
+			gun2Img = mossbergImg
+			gun2Clip = 6
+			gun2FireSpeed = 1000
+			gun2ReloadSpeed = 2000
+			--make this an image sheet
+			rugerImg.isVisible = false
+			uziImg.isVisible = false
+			ak47Img.isVisible = false
+			mossbergImg.isVisible = true
+		end
+		ammoText.text = ammo.. "/" ..reserve
+	end
+end
+--add[F]
+local function mossbergPurchase()
+	if score >= 500 then
+		if (reticle.x > -10) and (reticle.x < 40) and (reticle.y > 55) and (reticle.y < 105) then
+			purchased = true
+			mossbergEquiped()
+			transition.to(loadBall, {x=425, y=425, time = 50})
+			transition.to(loadBall, {delay = 50, x=520, y=425, time = 50})
+			score = score - 500
+			scoreText.text = "score:" ..score
+			currentGun = mossberg
+		end
+	end
+end
+
+--random weapon
+local randomAK47
+local randomUzi
+local randomMossberg
+
+local ak47RandImg = display.newImageRect(uiGroup, "ak47.png", 100, 100 ) 
+ak47RandImg.x = 300
+ak47RandImg.y = 150
+ak47RandImg.isVisible = false
+
+local uziRandImg = display.newImageRect(uiGroup, "gun 1 mag.png", 100, 100 ) 
+uziRandImg.x = 300
+uziRandImg.y = 150
+uziRandImg.isVisible = false
+
+local mossbergRandImg = display.newImageRect(uiGroup, "mossberg.png", 150, 150 ) 
+mossbergRandImg.x = 300
+mossbergRandImg.y = 150
+mossbergRandImg.isVisible = false
+
+local function randPurchase()
+	if score >= 1000 then
+		if (reticle.x > 275) and (reticle.x < 325) and (reticle.y > 55) and (reticle.y < 105) then
+			purchased = true
+			score = score - 1000
+			scoreText.text = "score:" ..score
+			local randGun = math.random(3)
+			if randGun == 1 then
+				ak47RandImg.isVisible = true
+				randomAK47 = true
+				randomUzi = false
+				randomMossberg = false
+			elseif randGun == 2 then
+				uziRandImg.isVisible = true
+				randomUzi = true
+				randomAK47 = false
+				randomMossberg = false
+			elseif randGun == 3 then
+				mossbergRandImg.isVisible = true
+				randomMossberg = true
+				randomAK47 = false
+				randomUzi = false
+			end
+			if randomAK47 == true then
+				uziRandImg.isVisible = false
+				mossbergRandImg.isVisible = false
+			elseif randomMossberg == true then
+				ak47RandImg.isVisible = false
+				uziRandImg.isVisible = false
+			elseif randomUzi == true then
+				ak47RandImg.isVisible = false
+				mossbergRandImg.isVisible = false
+			end
+		end
+	end
+end
 
 local function switchGun1()
 	if ( gunN1 == false) then
 		if loadBall.x == 520 then
 			--call a function which decides the image to use here
-			gun1Img.isVisible = true
-			gun2Img.isVisible = false
+			if gun1 ~= gun2 then
+				gun1Img.isVisible = true
+				gun2Img.isVisible = false
+			end
 			gun2Ammo = ammo
 			gun2Res = reserve
 			currentGun = gun1
@@ -294,8 +414,10 @@ end
 local function switchGun2()
 	if loadBall.x == 520 then
 		if ( gunN2 == false ) then
-			gun1Img.isVisible = false
-			gun2Img.isVisible = true
+			if gun1 ~= gun2 then
+				gun1Img.isVisible = false
+				gun2Img.isVisible = true
+			end
 			gun1Ammo = ammo
 			gun1Res = reserve
 			currentGun = gun2
@@ -317,6 +439,7 @@ end
 reload = false
 	
 function fireLaser()
+	
 	if leftClickIsPressed then
 		if ammo < 1 then
 			reload = true
@@ -362,7 +485,11 @@ function fireLaser()
 				transition.to( newLaser, {x=x2, y=y2, time=length*2,
 					onComplete = function()display.remove(newLaser)end
 				})
-				
+				if gunN1 == true then
+					fireSpeed = gun1FireSpeed
+				elseif gunN2 == true then
+					fireSpeed = gun2FireSpeed
+				end
 				transition.to(loadBall, {x=425, y=425, time = fireSpeed})
 						transition.to(loadBall, {delay = fireSpeed, x=520, y=425, time = fireSpeed})
 			end	
@@ -376,8 +503,10 @@ rIsPressed = false
 local function reloadGun()
 	if gunN1 == true then
 		reloadSpeed = gun1ReloadSpeed
+		currentGunClip = gun1Clip
 	elseif gunN2 == true then
 		reloadspeed = gun2ReloadSpeed
+		currentGunClip = gun2Clip
 	end
 	if ( ammo < currentGunClip ) then
 		if( reserve >= currentGunClip ) then
@@ -462,7 +591,6 @@ end
 
 aIsPressed = false
 dIsPressed = false
-spaceIsPressed = false
 local function movePlayer(event)
 	if (event.phase == "down") then
 		if (event.keyName == "d") then
@@ -471,9 +599,8 @@ local function movePlayer(event)
 		elseif (event.keyName == "a") then
 			player.deltaPerFrame = {-3.5, 0}
 			aIsPressed = true
-		elseif (event.keyName == "space" and not inAir) then
+		elseif (event.keyName == "w" and not inAir) then
 			player:applyLinearImpulse(0, -0.2, player.x, player.y)
-			spaceIsPressed = true
 		elseif (event.keyName == "e") then
 			fireHook()
 		elseif (event.keyName == "r") then
@@ -485,6 +612,8 @@ local function movePlayer(event)
 		elseif (event.keyName == "f") then
 			ak47Purchase()
 			uziPurchase()
+			mossbergPurchase()
+			randPurchase()
 		end
 	end
 	if (event.phase == "up") then
@@ -505,8 +634,11 @@ local function spawnZombie()
 	local newZombie = display.newImageRect(mainGroup, "redSquare.png", 50, 50)
 	physics.addBody(newZombie, "dynamic", {bounce = 0.0})
 	newZombie.myName = "zombie"
+	
+	local newHealth = 500
 
 	table.insert(zombiesTable, newZombie)
+	table.insert(zombiesHealth, newHealth)
 	
 	newZombie.x = math.random(500)
 	newZombie.y = platform.y - 50
@@ -521,16 +653,39 @@ local function onCollision(event)
 		if ((obj1.myName == "laser" and obj2.myName == "zombie")
 		or (obj1.myName == "zombie" and obj2.myName == "laser")
 		) then
-			display.remove(event.object1)
-			display.remove(event.object2)
+			
+			local opposite
+			
+			if (obj1.myName == "laser") then
+				opposite = obj2
+				display.remove(obj1)
+			elseif (obj2.myName == "laser") then
+				opposite = obj1
+				display.remove(obj2)
+			end
 			
 			for i = #zombiesTable, 1, -1 do
 				if (zombiesTable[i] == event.object1 or zombiesTable[i] == event.object2) then
-					table.remove(zombiesTable, i)
+					if (currentGun == "ruger") then
+						zombiesHealth[i] = zombiesHealth[i] - 200
+					elseif (currentGun == "uzi") then
+						zombiesHealth[i] = zombiesHealth[i] - 100
+					elseif (currentGun == "ak47") then
+						zombiesHealth[i] = zombiesHealth[i] - 250
+					elseif (currentGun == "mossberg") then
+						zombiesHealth[i] = zombiesHealth[i] - 250						
+					end
+					
+					if (zombiesHealth[i] <= 0) then
+						display.remove(opposite)
+						table.remove(zombiesHealth, i)
+						table.remove(zombiesTable, i)
+						
+						score = score + 100
+						scoreText.text = "score:" ..score
+					end
 				end
 			end
-			score = score + 100
-			scoreText.text = "score:" ..score
 		end
 	end
 
@@ -543,6 +698,12 @@ ak47Text.isVisible = false
 local uziText = display.newText(uiGroup, "[F] uzi (500)", 15 , 350, native.systemFont, 20 )
 ak47Text:setFillColor( 1, 1, 1 )
 uziText.isVisible = false
+local mossbergText = display.newText( "[F] mossberg (500)", 15 , 30, native.systemFont, 20 )
+mossbergText:setFillColor( 1, 1, 1 )
+mossbergText.isVisible = false
+local randText = display.newText( "[F] ? (1000)", 300 , 30, native.systemFont, 20 )
+randText:setFillColor( 1, 1, 1 )
+randText.isVisible = false
 
 local function gameLoopPurchase()
 	if (reticle.x > 275) and (reticle.x < 325) and (reticle.y > 375) and (reticle.y < 425) then
@@ -554,6 +715,16 @@ local function gameLoopPurchase()
 			uziText.isVisible = true
 	elseif (reticle.x < -15) or (reticle.x > 50)or (reticle.y < 375) or (reticle.y > 425) then
 		uziText.isVisible = false
+	end
+	if (reticle.x > -15) and (reticle.x < 50) and (reticle.y > 55) and (reticle.y < 105) then
+			mossbergText.isVisible = true
+	elseif (reticle.x < -15) or (reticle.x > 50)or (reticle.y < 55) or (reticle.y > 105) then
+			mossbergText.isVisible = false
+	end
+	if (reticle.x > 275) and (reticle.x < 325) and (reticle.y > 55) and (reticle.y < 105) then
+			randText.isVisible = true
+	elseif (reticle.x < 275) or (reticle.x > 325)or (reticle.y < 55) or (reticle.y > 105) then
+			randText.isVisible = false
 	end
 end
 
@@ -574,6 +745,8 @@ local function gameLoopEquiped()
 		gunNameText.text = "RUGER"
 	elseif currentGun == "ak47" then
 		gunNameText.text = "AK47"
+	elseif currentGun == "mossberg" then
+	gunNameText.text = "MOSSBERG"
 	end
 end
 
