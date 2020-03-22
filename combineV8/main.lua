@@ -724,12 +724,13 @@ local function movePlayer(event)
 end
 
 --added so i can check if walls are positioned correctly delete in final version
-local function onTouch(event)
+--[[local function onTouch(event)
 	if(event.phase == "ended") then	
 		player.x = event.x
 		player.y = event.y
 	end
-end
+end]]--
+
 -- bg movement
 local coordX, coordY
 local function onEnterFrame(event)
@@ -981,4 +982,4 @@ gameLoopTimer = timer.performWithDelay(2000, spawnZombie, 0)
 gameLoopTimer = timer.performWithDelay(50, moveBackground, 0)
 Runtime:addEventListener("enterFrame", onEnterFrame)
 Runtime:addEventListener("enterFrame", move)
-Runtime:addEventListener("touch", onTouch)
+--Runtime:addEventListener("touch", onTouch)
