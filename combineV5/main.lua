@@ -7,8 +7,8 @@ local laser
 local hook
 local aIsPressed 
 local dIsPressed 
-local rIsPressed
 local leftClickIsPressed
+local canFireSemiAutomatic = true
 local inAir
 local score
 local ammo
@@ -31,7 +31,6 @@ local gun1
 local gun2
 local gun1Img
 local gun2Img
-
 
 local zombiesTable = {}
 local zombiesHealth = {}
@@ -107,6 +106,7 @@ local function onMouseAction(event)
 		leftClickIsPressed = true
 	else
 		leftClickIsPressed = false
+		canFireSemiAutomatic = true
 	end
 end
 
@@ -440,7 +440,7 @@ reload = false
 	
 function fireLaser()
 	
-	if leftClickIsPressed then
+	if (leftClickIsPressed and canFireSemiAutomatic) then
 		if ammo < 1 then
 			reload = true
 		elseif ammo > 0 then
@@ -491,14 +491,21 @@ function fireLaser()
 					fireSpeed = gun2FireSpeed
 				end
 				transition.to(loadBall, {x=425, y=425, time = fireSpeed})
-						transition.to(loadBall, {delay = fireSpeed, x=520, y=425, time = fireSpeed})
+				transition.to(loadBall, {delay = fireSpeed, x=520, y=425, time = fireSpeed})
+				
+				if (currentGun == "ruger" or currentGun == "mossberg") then
+					canFireSemiAutomatic = false
+				end
 			end	
 		end
 	end
 end
 
+function fireFlame()
+
+end
+
 --Reloading
-rIsPressed = false
 
 local function reloadGun()
 	if gunN1 == true then
