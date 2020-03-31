@@ -8,6 +8,7 @@ local hook
 local aIsPressed 
 local dIsPressed 
 local leftClickIsPressed
+local rightClickIsPressed
 local canFireSemiAutomatic = true
 local inAir
 local score
@@ -32,13 +33,13 @@ local gun2
 local gun1Img
 local gun2Img
 
+local currentWave
 local zombiesTable = {}
 local zombiesHealth = {}
 
 local backGroup = display.newGroup()
 local mainGroup = display.newGroup()
 local uiGroup = display.newGroup()
-
 
 physics = require("physics")
 physics.start()
@@ -79,6 +80,7 @@ hook.y = player.y
 hook.isVisible = false
 
 physics.addBody(player, "dynamic", {bounce = 0.0})
+player.isFixedRotation = true
 physics.addBody(platform, "static", {bounce = 0.0})
 physics.addBody(ceiling, "static", {bounce = 0.0})
 
@@ -107,6 +109,12 @@ local function onMouseAction(event)
 	else
 		leftClickIsPressed = false
 		canFireSemiAutomatic = true
+	end
+	
+	if event.isSecondaryButtonDown then
+		rightClickIsPressed = true
+	else
+		rightClickIsPressed = false
 	end
 end
 
@@ -480,16 +488,13 @@ function fireLaser()
 					newLaser.rotation = 360-degrees+90
 					end
 				end
-								local x2 = (5*reticle.x-(4*x1))/(1)
+				
+				local x2 = (5*reticle.x-(4*x1))/(1)
 				local y2 = (5*reticle.y-(4*y1))/(1)
 				transition.to( newLaser, {x=x2, y=y2, time=length*2,
 					onComplete = function()display.remove(newLaser)end
 				})
-				if gunN1 == true then
-					fireSpeed = gun1FireSpeed
-				elseif gunN2 == true then
-					fireSpeed = gun2FireSpeed
-				end
+				
 				transition.to(loadBall, {x=425, y=425, time = fireSpeed})
 				transition.to(loadBall, {delay = fireSpeed, x=520, y=425, time = fireSpeed})
 				
@@ -499,10 +504,6 @@ function fireLaser()
 			end	
 		end
 	end
-end
-
-function fireFlame()
-
 end
 
 --Reloading
@@ -636,10 +637,13 @@ local function movePlayer(event)
 end
 
 --spawn enemies
+currentWave = 1
+
 local function spawnZombie()
 
 	local newZombie = display.newImageRect(mainGroup, "redSquare.png", 50, 50)
 	physics.addBody(newZombie, "dynamic", {bounce = 0.0})
+	newZombie.isFixedRotation = true
 	newZombie.myName = "zombie"
 	
 	local newHealth = 500
@@ -647,8 +651,17 @@ local function spawnZombie()
 	table.insert(zombiesTable, newZombie)
 	table.insert(zombiesHealth, newHealth)
 	
-	newZombie.x = math.random(500)
-	newZombie.y = platform.y - 50
+	local spawnPoint = math.random(3)
+	if (spawnPoint == 1) then
+		newZombie.x = -100
+		newZombie.y = platform.y - 50
+	elseif (spawnPoint == 2) then
+		newZombie.x = 50
+		newZombie.y = platform.y - 50	
+	elseif (spawnPoint == 3) then
+		newZombie.x = 500
+		newZombie.y = platform.y - 50
+	end
 
 end
 
@@ -690,12 +703,22 @@ local function onCollision(event)
 						
 						score = score + 100
 						scoreText.text = "score:" ..score
+						if next(zombiesTable) == nil then
+							currentWave = currentWave + 1
+							startWave()
+						end
 					end
+					
+
 				end
 			end
 		end
 	end
 
+end
+
+function startWave()
+	timer.performWithDelay(2000, spawnZombie, math.pow(currentWave, 2) - currentWave + 5)
 end
 
 --Gameloops
@@ -785,7 +808,7 @@ player:addEventListener("collision", onLanding)
 gameLoopTimer = timer.performWithDelay(fireSpeed, fireLaser, 0)
 gameLoopTimer = timer.performWithDelay(100, gameLoopReload, 0)
 gameLoopTimer = timer.performWithDelay(100, gameLoopEquiped, 0)
-timer.performWithDelay(1000, reloadGun(), 0)
+timer.performWithDelay(reloadSpeed, reloadGun(), 0)
 gameLoopTimer = timer.performWithDelay(100, gameLoopUziReload, 0)
 gameLoopTimer = timer.performWithDelay(50, gameLoopPurchase, 0)
-gameLoopTimer = timer.performWithDelay(2000, spawnZombie, 0)
+startWave()
