@@ -13,10 +13,10 @@ function M.new(instance, options)
 	instance = display.newImageRect("scene/game/img/square.png", 50, 50)
 	instance.x, instance.y = x, y
 	
-	physics.addBody(instance, "dynamic", {bounce = 0.0, friction = 1.0})
+	physics.addBody(instance, "dynamic", {bounce = 0.0, density = 2.0})
 	instance.isFixedRotation = true
 	
-	local max, acceleration, left, right = 1, 2, 0, 0
+	local max, acceleration, left, right = 1000, 800, 0, 0
 	local lastEvent = {}
 	
 	local function key(event)
@@ -46,7 +46,7 @@ function M.new(instance, options)
 
 	function instance:jump()
 		if not self.jumping then
-			self:applyLinearImpulse(0, -0.01)
+			self:applyLinearImpulse(0, -100)
 			self.jumping = true
 		end
 	end
