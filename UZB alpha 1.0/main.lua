@@ -26,7 +26,7 @@ local uiGroup = display.newGroup()
 
 
 physics.start()
-physics.setGravity(0,1)
+physics.setGravity(0,15)
 
 map = mapData.new()
 -- backGroup:insert(map)
@@ -35,6 +35,7 @@ player = playerData.new({}, {})
 player.x = display.contentCenterX
 player.y = display.contentCenterY
 -- mainGroup:insert(player)
+table.insert(map, player)
 
 reticle = display.newImageRect(uiGroup, "reticle.png", 50, 50)
 reticle.x = display.contentCenterX
