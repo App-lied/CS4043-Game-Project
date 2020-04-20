@@ -1,3 +1,5 @@
+local vendingData = require("scene.game.lib.vendingData")
+
 local M = {}
 
 function M.new()
@@ -88,24 +90,19 @@ function M.new()
 	wall8:setFillColor(0.5, 0, 1)
 	table.insert(map, wall8)
 
-	collisionGroup.alpha = 0.05
+	collisionGroup.alpha = 0.01
+	
 	--Objects
-	local vending1 = display.newImageRect(objectGroup,"scene/game/img/vending machine 1.png", 300,400)
-	vending1.x = 300
-	vending1.y = 720
-	--vending1:setFillColor(0,1,0)
 
-	local vending2 = display.newRect(objectGroup, 15,700,50,50)
-	vending2:setFillColor(0,0,1)
+	local vendingRand = vendingData.new({name = "random"}, {name = "vendingMachine1", x = 300, y = 600, width = 300, height = 500})
 
-	local vending3 = display.newRect(objectGroup, 15,380,50,50)
-	vending3:setFillColor(1,0,0)
+	local vending1 = vendingData.new({name = "uzi"}, {x = 15, y = 650, width = 50, height = 100, colour = {0, 0, 1}})
 
-	local vending4 = display.newRect(objectGroup, 157,380,50,50)
-	vending4:setFillColor(1,1,0)
+	local vending2 = vendingData.new({name = "ruger"}, {x = 15, y = 330, width = 50, height = 100, colour = {1, 0, 0}})
 
-	local vendingRand = display.newRect(objectGroup, 300,380,50,50)
-	vendingRand:setFillColor(0,0.8,0.7)
+	local vending3 = vendingData.new({name = "mac10"}, {x = 157, y = 330, width = 50, height = 100, colour = {1, 1, 0}})
+
+	local vending4 = vendingData.new({name = "mossberg"}, {x = 300, y = 330, width = 50, height = 100, colour = {0, 0.8, 0.7}})
 	
 	for i = #map, 1, -1 do
 		physics.addBody(map[i], "static", {bounce = 0.0, friction = 1.0})

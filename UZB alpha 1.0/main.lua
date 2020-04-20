@@ -11,19 +11,14 @@ local map
 local leftClickIsPressed
 local canFireSemiAutomatic = true
 local score
-local currentGun
+--currentGun
 local gunN1
 local gunN2
 local gunList
 
-local currentWave
-local zombiesTable = {}
-local zombiesHealth = {}
-
-local backGroup = display.newGroup()
-local mainGroup = display.newGroup()
-local uiGroup = display.newGroup()
-
+-- local currentWave
+-- local zombiesTable = {}
+-- local zombiesHealth = {}
 
 physics.start()
 physics.setGravity(0,15)
@@ -31,19 +26,17 @@ physics.setGravity(0,15)
 map = mapData.new()
 -- backGroup:insert(map)
 
-player = playerData.new({}, {})
-player.x = display.contentCenterX
-player.y = display.contentCenterY
--- mainGroup:insert(player)
+player = playerData.new({x = display.contentCenterX, y = display.contentCenterY}, {})
 table.insert(map, player)
 
-reticle = display.newImageRect(uiGroup, "reticle.png", 50, 50)
+reticle = display.newImageRect("scene/game/img/reticle.png", 50, 50)
 reticle.x = display.contentCenterX
 reticle.y = display.contentCenterY
+reticle.myName = "reticle"
 
-loadBall = display.newCircle(uiGroup, 1320, 1200, 10)
+loadBall = display.newCircle(1320, 1200, 10)
 
-hook = display.newImageRect(mainGroup,"hook.png", 25, 25)
+hook = display.newImageRect("scene/game/img/hook.png", 25, 25)
 hook.x = player.x
 hook.y = player.y
 hook.isVisible = false
@@ -51,6 +44,7 @@ hook.isVisible = false
 physics.addBody(hook, "dynamic", {isSensor = true})
 hook.isBodyActive = false
 hook.isBullet = true
+table.insert(map, hook)
 
 local function enterFrame()
 	
@@ -68,7 +62,7 @@ end
 
 --Reticle
 leftClickIsPressed = false
-local function onMouseAction(event)
+local function mouse(event)
 	reticle.x = event.x
 	reticle.y = event.y
 	
@@ -88,7 +82,7 @@ end
 
 -- HUD 
 score = 1000
-local scoreText = display.newText(uiGroup, "score:" ..score, -550 , 50, native.systemFont, 80 )
+local scoreText = display.newText("Score:" ..score, -550 , 50, native.systemFont, 80 )
 scoreText:setFillColor( 1, 1, 1 )
 
 --Laser
@@ -99,14 +93,14 @@ function fireLaser()
 				
 				currentGun:setAmmo()
 				
-				local newLaser = display.newImageRect("laser.png", 15, 40)
+				local newLaser = display.newImageRect("scene/game/img/laser.png", 15, 40)
 				physics.addBody(newLaser, "dynamic", {isSensor = true})
 				newLaser.isBullet = true
 				newLaser.myName = "laser"
 
 				newLaser.x = player.x
 				newLaser.y = player.y
-				newLaser:toBack()
+				-- newLaser:toBack()
 			
 				local y1 = player.y
 				local x1 = player.x
@@ -139,6 +133,9 @@ function fireLaser()
 				transition.to(loadBall, {x=1200, y=1200, time = fireSpeed})
 				transition.to(loadBall, {delay = fireSpeed, x=1320, y=1200, time = fireSpeed})
 				
+				if currentGun.isSemiAuto then
+					canFireSemiAutomatic = false
+				end
 		end
 	end
 end
@@ -279,22 +276,11 @@ gunN2 = gunList[2]
 currentGun = gunN1
 currentGun:show()
 
-local reloadText = display.newText( "", display.contentCenterX, display.contentCenterY, native.systemFont, 100 )
-uiGroup:insert(reloadText)
-local function gameLoopReload()
-	if currentGun:getAmmo() < 1 then
-		reloadText.text ="[R]RELOAD"
-	elseif currentGun:getAmmo() > 0 then
-		reloadText.text = ""
-	end
-end
-
 Runtime:addEventListener("enterFrame", enterFrame)
 Runtime:addEventListener("key", movePlayer)
-Runtime:addEventListener("mouse", onMouseAction)
+Runtime:addEventListener("mouse", mouse)
 -- Runtime:addEventListener("collision", onCollision)
 hook:addEventListener("collision", onHookCollision)
 gameLoopTimer = timer.performWithDelay(17, fireLaser, 0)
-gameLoopTimer = timer.performWithDelay(100, gameLoopReload, 0)
 
 -- startWave()

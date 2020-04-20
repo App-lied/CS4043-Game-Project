@@ -30,6 +30,9 @@ function M.new(options)
 	text.isVisible = false
 	text2.isVisible = false
 	
+	local reloadText = display.newText("[R] RELOAD", display.contentCenterX, display.contentCenterY, font, 100)
+	reloadText.isVisible = false
+	
 	function gun:getAmmo()
 		return self.ammo
 	end
@@ -58,6 +61,10 @@ function M.new(options)
 	function gun:setAmmo()
 			self.ammo = self.ammo - 1
 			text2.text = self.ammo.."/"..self.reserve
+			
+			if (self.ammo < 1) then
+				reloadText.isVisible = true
+			end
 	end
 	
 	function gun:reload()
@@ -80,6 +87,7 @@ function M.new(options)
 					end
 				end
 			end
+			reloadText.isVisible = false
 		end	
 	end
 	
