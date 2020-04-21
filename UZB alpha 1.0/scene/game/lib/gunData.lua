@@ -15,6 +15,8 @@ function M.new(options)
 	gun.isSemiAuto = options.isSemiAuto or false
 	gun.isReloading = false
 	
+	gun.fullReserve = options.reserve
+	
 	local width = options.width or 0
 	local height = options.height or 0
 	local x, y = options.x or 1200, options.y or 1000
@@ -101,6 +103,12 @@ function M.new(options)
 		img.isVisible = false
 		text.isVisible = false
 		text2.isVisible = false
+	end
+	
+	function gun:refresh()
+		self.ammo = self.clip
+		self.reserve = self.fullReserve
+		text2.text = self.ammo.."/"..self.reserve
 	end
 	
 	return gun

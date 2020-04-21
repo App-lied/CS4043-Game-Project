@@ -100,9 +100,9 @@ function M.new()
 
 	local vending2 = vendingData.new({name = "ruger"}, {x = 15, y = 330, width = 50, height = 100, colour = {1, 0, 0}})
 
-	local vending3 = vendingData.new({name = "mac10"}, {x = 157, y = 330, width = 50, height = 100, colour = {1, 1, 0}})
+	local vending3 = vendingData.new({name = "mac11"}, {x = 157, y = 330, width = 50, height = 100, colour = {1, 1, 0}})
 
-	local vending4 = vendingData.new({name = "mossberg"}, {x = 300, y = 330, width = 50, height = 100, colour = {0, 0.8, 0.7}})
+	local vending4 = vendingData.new({name = "mossberg500"}, {x = 300, y = 330, width = 50, height = 100, colour = {0, 0.8, 0.7}})
 	
 	for i = #map, 1, -1 do
 		physics.addBody(map[i], "static", {bounce = 0.0, friction = 1.0})
