@@ -12,9 +12,6 @@ local leftClickIsPressed
 local canFireSemiAutomatic = true
 local score
 --currentGun
-local gunN1
-local gunN2
-local gunList
 
 -- local currentWave
 -- local zombiesTable = {}
@@ -36,16 +33,6 @@ reticle.myName = "reticle"
 
 loadBall = display.newCircle(1320, 1200, 10)
 
-hook = display.newImageRect("scene/game/img/hook.png", 25, 25)
-hook.x = player.x
-hook.y = player.y
-hook.isVisible = false
-
-physics.addBody(hook, "dynamic", {isSensor = true})
-hook.isBodyActive = false
-hook.isBullet = true
-table.insert(map, hook)
-
 local function enterFrame()
 	
 	if player and player.x and player.y then
@@ -56,8 +43,6 @@ local function enterFrame()
 		end
 	end
 	
-	hook.x = player.x
-	hook.y = player.y 
 end
 
 --Reticle
@@ -140,31 +125,13 @@ function fireLaser()
 	end
 end
 
---Hook
-local function fireHook()
-	hook.isVisible = true
-	hook.isBodyActive = true
-	transition.to(hook, {x = reticle.x, y = reticle.y, time = 300,
-		onComplete = function() hook.isVisible = false
-		hook.isBodyActive = false
-		end
-	})
-end
- 
-local function onHookCollision(event)
-	if (not (event.other == player)) then
-		transition.to(player, {x = event.target.x, y = event.target.y, time = 3000})
-	end
-end
-
-
 --Movement
 
 local function movePlayer(event)
 	if (event.phase == "down") then
-		if (event.keyName == "e") then
-			fireHook()
-		elseif (event.keyName == "r") then
+		-- if (event.keyName == "e") then
+			-- fireHook()
+		if (event.keyName == "r") then
 			currentGun:reload()
 		elseif (event.keyName == "1") then
 			currentGun:hide()
@@ -257,19 +224,19 @@ currentWave = 1
 gunList = {}
 table.insert(gunList, gunData.new({clip = 7, reserve = 56, fireSpeed = 200, reloadSpeed = 500, damage = 200, name = "ruger", isSemiAuto = true, width = 303, height = 196}))
 table.insert(gunList, gunData.new({clip = 32, reserve = 96, fireSpeed = 50, reloadSpeed = 750, damage = 200, name = "uzi", isSemiAuto = false, width = 316, height = 267}))
-table.insert(gunList, gunData.new({clip = 30, reserve = 120, fireSpeed = 100, reloadSpeed = 750, damage = 250, name = "ak47", isSemiAuto = false}))
-table.insert(gunList, gunData.new({clip = 6, reserve = 30, fireSpeed = 1000, reloadSpeed = 2000, damage = 1000, name = "mossberg500", isSemiAuto = true}))
-table.insert(gunList, gunData.new({clip = 6, reserve = 30, fireSpeed = 1000, reloadSpeed = 2000, damage = 1000, name = "m40", isSemiAuto = true}))
-table.insert(gunList, gunData.new({clip = 100, reserve = 500, fireSpeed = 25, reloadSpeed = 2000, damage = 100, name = "m134", isSemiAuto = false}))
-table.insert(gunList, gunData.new({clip = 20, reserve = 100, fireSpeed = 50, reloadSpeed = 750, damage = 300, name = "m16a4", isSemiAuto = true}))
-table.insert(gunList, gunData.new({clip = 70, reserve = 210, fireSpeed = 75, reloadSpeed = 900, damage = 300, name = "ppsh41", isSemiAuto = false}))
-table.insert(gunList, gunData.new({clip = 25, reserve = 150, fireSpeed = 50, reloadSpeed = 750, damage = 200, name = "famas", isSemiAuto = false}))
-table.insert(gunList, gunData.new({clip = 6, reserve = 24, fireSpeed = 300, reloadSpeed = 1000, damage = 500, name = "python", isSemiAuto = true}))
-table.insert(gunList, gunData.new({clip = 20, reserve = 100, fireSpeed = 100, reloadSpeed = 500, damage = 300, name = "mp7", isSemiAuto = false}))
-table.insert(gunList, gunData.new({clip = 15, reserve = 75, fireSpeed = 50, reloadSpeed = 500, damage = 250, name = "mp5k", isSemiAuto = false}))
-table.insert(gunList, gunData.new({clip = 17, reserve = 60, fireSpeed = 400, reloadSpeed = 500, damage = 150, name = "glock", isSemiAuto = true}))
-table.insert(gunList, gunData.new({clip = 32, reserve = 180, fireSpeed = 5, reloadSpeed = 500, damage = 150, name = "mac11", isSemiAuto = false}))
-table.insert(gunList, gunData.new({clip = 12, reserve = 75, fireSpeed = 50, reloadSpeed = 500, damage = 200, name = "cz75", isSemiAuto = true,}))
+table.insert(gunList, gunData.new({clip = 30, reserve = 120, fireSpeed = 100, reloadSpeed = 750, damage = 250, name = "ak47", isSemiAuto = false, width = 969, height = 293}))
+table.insert(gunList, gunData.new({clip = 6, reserve = 30, fireSpeed = 1000, reloadSpeed = 2000, damage = 1000, name = "mossberg500", isSemiAuto = true, width = 1004, height = 208}))
+table.insert(gunList, gunData.new({clip = 6, reserve = 30, fireSpeed = 1000, reloadSpeed = 2000, damage = 1000, name = "m40", isSemiAuto = true, width = 1066, height = 230}))
+table.insert(gunList, gunData.new({clip = 100, reserve = 500, fireSpeed = 25, reloadSpeed = 2000, damage = 100, name = "m134", isSemiAuto = false, width = 1084, height = 301}))
+table.insert(gunList, gunData.new({clip = 20, reserve = 100, fireSpeed = 50, reloadSpeed = 750, damage = 300, name = "m16a4", isSemiAuto = true, width = 1083, height = 249}))
+table.insert(gunList, gunData.new({clip = 70, reserve = 210, fireSpeed = 75, reloadSpeed = 900, damage = 300, name = "ppsh41", isSemiAuto = false, width = 858, height = 233}))
+table.insert(gunList, gunData.new({clip = 25, reserve = 150, fireSpeed = 50, reloadSpeed = 750, damage = 200, name = "famas", isSemiAuto = false, width = 557, height = 221}))
+table.insert(gunList, gunData.new({clip = 6, reserve = 24, fireSpeed = 300, reloadSpeed = 1000, damage = 500, name = "python", isSemiAuto = true, width = 336, height = 196}))
+table.insert(gunList, gunData.new({clip = 20, reserve = 100, fireSpeed = 100, reloadSpeed = 500, damage = 300, name = "mp7", isSemiAuto = false, width = 653, height = 294}))
+table.insert(gunList, gunData.new({clip = 15, reserve = 75, fireSpeed = 50, reloadSpeed = 500, damage = 250, name = "mp5k", isSemiAuto = false, width = 659, height = 294}))
+table.insert(gunList, gunData.new({clip = 17, reserve = 60, fireSpeed = 400, reloadSpeed = 500, damage = 150, name = "glock", isSemiAuto = true, width = 293, height = 195}))
+table.insert(gunList, gunData.new({clip = 32, reserve = 180, fireSpeed = 5, reloadSpeed = 500, damage = 150, name = "mac11", isSemiAuto = false, width = 304, height = 219}))
+table.insert(gunList, gunData.new({clip = 12, reserve = 75, fireSpeed = 50, reloadSpeed = 500, damage = 200, name = "cz75", isSemiAuto = true, width = 286, height = 198}))
 
 gunN1 = gunList[1]
 gunN2 = gunList[2]
@@ -280,7 +247,6 @@ Runtime:addEventListener("enterFrame", enterFrame)
 Runtime:addEventListener("key", movePlayer)
 Runtime:addEventListener("mouse", mouse)
 -- Runtime:addEventListener("collision", onCollision)
-hook:addEventListener("collision", onHookCollision)
 gameLoopTimer = timer.performWithDelay(17, fireLaser, 0)
 
 -- startWave()
