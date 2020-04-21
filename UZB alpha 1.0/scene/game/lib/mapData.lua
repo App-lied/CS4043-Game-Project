@@ -10,7 +10,7 @@ function M.new()
 	local collisionGroup = display.newGroup()
 	local objectGroup = display.newGroup()
 	
-	local background = display.newImageRect(backGroup, "scene/game/img/bachgroundV2.png", 8000, 5000)
+	local background = display.newImageRect(backGroup, "scene/game/img/backgroundV2.png", 8000, 5000)
 	background.x = 1700
 	background.y = 1400
 
