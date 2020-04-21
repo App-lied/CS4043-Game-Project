@@ -10,7 +10,7 @@ function M.new()
 	local collisionGroup = display.newGroup()
 	local objectGroup = display.newGroup()
 	
-	local background = display.newImageRect(backGroup, "scene/game/img/bg.png", 8000, 5000)
+	local background = display.newImageRect(backGroup, "scene/game/img/bachgroundV2.png", 8000, 5000)
 	background.x = 1700
 	background.y = 1400
 
@@ -20,73 +20,74 @@ function M.new()
 	platform1:setFillColor(0.5, 0, 1)
 	table.insert(map, platform1)
 	--ground floor left
-	local platform2 = display.newRect(collisionGroup, 1550, 2900, 4548, 120)
+	local platform2 = display.newRect(collisionGroup, 1550, 2940, 4548, 80)
 	platform2:setFillColor(0.5, 0, 1)
 	table.insert(map, platform2)
 	--ground floor right
-	local platform3 = display.newRect(collisionGroup,4500, 2900, 240, 123)
+	local platform3 = display.newRect(collisionGroup,4500, 2940, 240, 80)
 	platform3:setFillColor(0.5, 0, 1)
 	table.insert(map, platform3)
 	--left wall
-	local wall1 = display.newRect(collisionGroup, -750, 2150, 88, 3656)
+	local wall1 = display.newRect(collisionGroup, -750, 2150, 80, 3656)
 	wall1:setFillColor(0.5, 0, 1)
 	table.insert(map, wall1)
 	--right bottom wall(basement and bathroom right wall)
-	local wall2 = display.newRect(collisionGroup, 4600, 3000, 100, 1660)
+	local wall2 = display.newRect(collisionGroup, 4550, 3000, 80, 1660)
 	wall2:setFillColor(0.5, 0, 1)
 	table.insert(map, wall2)
 	--the bar
-	local bar = display.newRect(collisionGroup,2025, 2750, 1396, 181)
+	local bar = display.newRect(collisionGroup,2025, 2810, 1396, 181)
 	bar:setFillColor(0.5, 0, 1)
 	table.insert(map, bar)
 	--the light in the bar
-	local light = display.newRect(collisionGroup,2950, 2240, 332, 48)
+	local light = display.newRect(collisionGroup,2930, 2260, 315, 50)
 	light:setFillColor(0.5, 0, 1)
 	table.insert(map, light)
 	--first floor left
-	local platform4 = display.newRect(collisionGroup,-450,1700, 628, 124)
+	local platform4 = display.newRect(collisionGroup,-450, 1740, 628, 80)
 	platform4:setFillColor(0.5, 0, 1)
 	table.insert(map, platform4)
 	--first floor right
-	local platform5 = display.newRect(collisionGroup,2500, 1700, 4116, 124)
+	local platform5 = display.newRect(collisionGroup,2500, 1740, 4116, 80)
 	platform5:setFillColor(0.5, 0, 1)
 	table.insert(map, platform5)
 	--disco bottom wall right
-	local wall3 = display.newRect(collisionGroup,3300, 1060, 96, 150)
+	local wall3 = display.newRect(collisionGroup,3260, 1055, 80, 150)
 	wall3:setFillColor(0.5, 0, 1)
 	table.insert(map, wall3)
 	--disco bottom wall left
-	local wall4 = display.newRect(collisionGroup,950, 1060, 96, 150)
+	local wall4 = display.newRect(collisionGroup,945, 1055, 80, 150)
 	wall4:setFillColor(0.5, 0, 1)
 	table.insert(map, wall4)
 	--right top wall (storage room wall right)
-	local wall5 = display.newRect(collisionGroup,4600,1350, 112, 875)
+	local wall5 = display.newRect(collisionGroup, 4550, 1360, 80, 810)
 	wall5:setFillColor(0.5, 0, 1)
 	table.insert(map, wall5)
 	--second floor right
-	local platform6 = display.newRect(collisionGroup,3650,950, 1920, 116)
+	local platform6 = display.newRect(collisionGroup,3650,940, 1920, 80)
 	platform6:setFillColor(0.5, 0, 1)
 	table.insert(map, platform6)
 	--second floor left
-	local platform7 = display.newRect(collisionGroup,400, 950, 2216, 116)
+	local platform7 = display.newRect(collisionGroup,400, 940, 2216, 80)
 	platform7:setFillColor(0.5, 0, 1)
 	table.insert(map, platform7)
 	--disco top wall left
-	local wall6 = display.newRect(collisionGroup, 950, -40, 88, 736)
+	local wall6 = display.newRect(collisionGroup, 945, -40, 80, 736)
 	wall6:setFillColor(0.5, 0, 1)
 	table.insert(map, wall6)
 	--disco top wall right
-	local wall7 = display.newRect(collisionGroup, 3300,-40,88, 736)
+	local wall7 = display.newRect(collisionGroup, 3260,-40, 80, 736)
 	wall7:setFillColor(0.5, 0, 1)
 	table.insert(map, wall7)
 	--ceiling of the building
-	--local platform8 = display.newImageRect(mainGroup,"ceiling.png", 2403, 81)
+	local platform8 = display.newRect(collisionGroup, 2100, -360, 2403, 80)
+	platform8:setFillColor(0.5, 0, 1)
 	--bottom balcony floor // bathroom ceiling
 	local platform9 = display.newRect(collisionGroup,3950, 2245, 1369, 88)
 	platform9:setFillColor(0.5, 0, 1)
 	table.insert(map, platform9)
 	--bar wall 
-	local wall8 = display.newRect(collisionGroup,950, 1800, 88, 150 )
+	local wall8 = display.newRect(collisionGroup,945, 2000, 80, 590 )
 	wall8:setFillColor(0.5, 0, 1)
 	table.insert(map, wall8)
 
