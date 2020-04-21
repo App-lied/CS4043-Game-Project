@@ -15,39 +15,68 @@ function M.new(instance, options)
 	
 	physics.addBody(instance, "dynamic", {bounce = 0.0, density = 2.0})
 	instance.isFixedRotation = true
+	instance.isVisible = true
+	
+	instance2 = display.newImage("scene/game/img/left/mc.png")
+	instance2.isVisible = false
 	
 	local max, acceleration, left, right = 1000, 800, 0, 0
 	local lastEvent = {}
+	
+	aIsPressed = false
+	dIsPressed = false
 	
 	local function key(event)
 		
 		local phase = event.phase
 		local name = event.keyName
 		
-		if ( phase == lastEvent.phase ) and ( name == lastEvent.keyName ) then return false end
+		--if ( phase == lastEvent.phase ) and ( name == lastEvent.keyName ) then return false end
 			
 		if (phase == "down") then
 			if (name == "a") then
-				left = -acceleration
-			end
-			if (name == "d") then
-				right = acceleration
-			elseif (event.keyName == "w") then
+				instance:setLinearVelocity(-900, 0)
+				aIsPressed = true
+				instance2.isVisible = true
+				instance.isVisible = false
+				instance2.x, instance2.y = instance.x, instance.y
+			elseif (name == "d") then
+				instance:setLinearVelocity(900, 0)
+				dIsPressed = true
+				instance2.isVisible = false
+				instance.isVisible = true
+				instance2.x, instance2.y = instance.x, instance.y
+			elseif (event.keyName == "w" ) then
 				instance:jump()
 			end
-		elseif (phase == "up") then
-			if (name == "a") then left = 0 end
-			if (name == "d") then right = 0 end
+		return true
+		end
+		if (phase == "up") then
+			if (name == "a") then 
+			aIsPressed = false
+			end
+			if (name == "d") then 
+			dIsPressed = false
+			end
+		end
+		if not(dIsPressed or aIsPressed ) then
+		instance:setLinearVelocity(0, 0)
 		end
 		
-		lastEvent = event
+		--lastEvent = event
 	end
 
 
 	function instance:jump()
-		if not self.jumping then
-			self:applyLinearImpulse(0, -100)
-			self.jumping = true
+		local vx, vy = instance:getLinearVelocity()
+		if doubleJump ~= 0 then
+			if ( vx == 0) then
+			doubleJump = doubleJump - 1
+			self:applyLinearImpulse(0, -7000)
+			else
+			doubleJump = doubleJump - 1
+			self:applyLinearImpulse(0, -3500)
+			end
 		end
 	end
 	
@@ -64,19 +93,6 @@ function M.new(instance, options)
 	end
 	
 
-	local function enterFrame()
-		local vx, vy = instance:getLinearVelocity()
-		local dx = left + right
-		if instance.jumping then dx = dx / 4 end
-		if ( dx < 0 and vx > -max ) or ( dx > 0 and vx < max ) then
-			instance:applyForce( dx or 0, 0, instance.x, instance.y )
-		end
-		if (left == 0 and right == 0 and vy == 0) then
-			instance:setLinearVelocity(0, 0)
-		end
-	end
-	
-	Runtime:addEventListener("enterFrame", enterFrame)
 	Runtime:addEventListener("key", key)
 	instance:addEventListener("collision")
 	
