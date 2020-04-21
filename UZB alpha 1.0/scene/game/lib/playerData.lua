@@ -9,19 +9,18 @@ function M.new(instance, options)
 	
 	local parent = instance.parent
 	local x, y = instance.x, instance.y
+	local doubleJump = 1
 	
 	instance = display.newImageRect("scene/game/img/square.png", 50, 50)
 	instance.x, instance.y = x, y
-	
-	physics.addBody(instance, "dynamic", {bounce = 0.0, density = 2.0})
-	instance.isFixedRotation = true
 	instance.isVisible = true
 	
 	instance2 = display.newImage("scene/game/img/left/mc.png")
 	instance2.isVisible = false
 	
-	local max, acceleration, left, right = 1000, 800, 0, 0
-	local lastEvent = {}
+	physics.addBody(instance, "dynamic", {bounce = 0.0, density = 2.0})
+	instance.isFixedRotation = true
+	
 	
 	aIsPressed = false
 	dIsPressed = false
@@ -31,7 +30,6 @@ function M.new(instance, options)
 		local phase = event.phase
 		local name = event.keyName
 		
-		--if ( phase == lastEvent.phase ) and ( name == lastEvent.keyName ) then return false end
 			
 		if (phase == "down") then
 			if (name == "a") then
@@ -63,7 +61,6 @@ function M.new(instance, options)
 		instance:setLinearVelocity(0, 0)
 		end
 		
-		--lastEvent = event
 	end
 
 
