@@ -99,7 +99,7 @@ function scene:show( event )
 
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
-
+sceneTest=3
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
     end
@@ -114,7 +114,6 @@ function scene:hide( event )
 
     if ( phase == "will" ) then
         -- Code here runs when the scene is on screen (but is about to go off screen)
-        sceneTest=3
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
     end

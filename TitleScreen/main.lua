@@ -9,4 +9,8 @@ local composer = require("composer")
 --local Game = composer.newScene()
 --local HighScore = composer.newScene()
 local sceneTest=0
+local musicStop = 0
+local backgroundMusic1 = audio.loadStream( "try out 2.wav" )
+audio.play( backgroundMusic1, { channel=1, loops=-1 } )
+
 composer.gotoScene( "Start-Up", { time=2500, effect="crossFade" } )

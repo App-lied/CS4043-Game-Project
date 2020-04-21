@@ -10,7 +10,8 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
-
+audio.reserveChannels( 1 )
+audio.setVolume( 0.25, { channel=1 } )
 
 
 
@@ -28,7 +29,7 @@ local pressStartButton
 local Settings
 local pressSettings
 local Coin
-
+local musicStop=0
 function scene:create( event )
 
     local sceneGroup = self.view
@@ -81,6 +82,10 @@ function scene:show( event )
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
         --START MUSIC
+        local backgroundMusic1 = audio.loadStream( "try out 2.wav" )
+      --if(musicStop==0) then
+        --audio.play( backgroundMusic1, { channel=1, loops=-1 } )
+      --end
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
         sceneTest=1
@@ -131,21 +136,64 @@ local function mouse(event)
           composer.gotoScene( "Difficulty", {time=0, effect="fade"} )
     end
     if (event.x<=38 and event.x>=-42 and event.y>=257 and event.y<=272) then
+          if(sceneTest==2 or sceneTest==3) then
+            composer.gotoScene( "Start-Up", {time=0, effect="fade"} )
+          end
           if(sceneTest==1) then
             print("nnananan ")
             composer.gotoScene( "Settings", {time=0, effect="fade"} )
-          end
-          if(sceneTest==2 or sceneTest==3) then
-            composer.gotoScene( "Start-Up", {time=0, effect="fade"} )
           end
     end
     if (event.x<=204 and event.x>=30 and event.y>=60 and event.y<=84 and sceneTest==3) then
       --Sound ON/OFF
       print("MUTE")
+      print("NO TUNES BOI")
+        if (musicStop==0) then
+          print(0)
+          audio.stop( 1 )
+          musicStop = 1
+        else
+          local backgroundMusic1 = audio.loadStream( "try out 2.wav" )
+          audio.play( backgroundMusic1, { channel=1, loops=-1 } )
+          print(1)
+          audio.play( 1 )
+          musicStop = 0
+        end
     end
     if (event.x<=204 and event.x>=30 and event.y>=100 and event.y<=124 and sceneTest==3) then
       --Music ON/OFF
       print("NO TUNES BOI")
+        if (musicStop==0) then
+          print(0)
+          audio.stop( 1 )
+          musicStop = 1
+        else
+          local backgroundMusic1 = audio.loadStream( "try out 2.wav" )
+          audio.play( backgroundMusic1, { channel=1, loops=-1 } )
+          print(1)
+          audio.play( 1 )
+          musicStop = 0
+        end
+    end
+    if (sceneTest==2) then
+      if (event.x<=167 and event.x>=65 and event.y>=100 and event.y<=126) then
+          --composer.gotoScene( "MainGame", {time=100, effect="crossFade"} )
+          --DifficultyTest = 1
+          --easy
+          print("easy")
+      end
+      if (event.y<=165 and event.x>=67 and event.y>=142 and event.x<=166) then
+        --composer.gotoScene( "MainGame", {time=100, effect="crossFade"} )
+        --DifficultyTest = 2
+        --normal
+        print("normal")
+      end
+      if (event.y<=201 and event.x>= 61.5 and event.y>=177 and event.x<=176)then
+        --composer.gotoScene( "MainGame", {time=100, effect="crossFade"} )
+        --DifficultyTest = 3
+        --hard
+        print("hard")
+      end
     end
   end
 end
