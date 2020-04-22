@@ -70,6 +70,10 @@ score = 1000
 local scoreText = display.newText("Score:" ..score, -550 , 50, native.systemFont, 80 )
 scoreText:setFillColor( 1, 1, 1 )
 
+--[[Gun In Hand
+local gunInHand = display.newImage("scene/game/img/right/ruger.png")
+	gunInHand.x, gunInHand.y = player.x + 25, player.y - 80]]--
+
 --Laser
 	
 function fireLaser()
@@ -78,13 +82,14 @@ function fireLaser()
 				
 				currentGun:setAmmo()
 				
-				local newLaser = display.newImageRect("scene/game/img/laser.png", 15, 40)
+				local newLaser = display.newImageRect("scene/game/img/bullet.png", 15, 40)
 				physics.addBody(newLaser, "dynamic", {isSensor = true})
 				newLaser.isBullet = true
 				newLaser.myName = "laser"
 
-				newLaser.x = player.x
-				newLaser.y = player.y
+				newLaser.x = player.x - 25
+				newLaser.y = player.y - 100
+				
 				-- newLaser:toBack()
 			
 				local y1 = player.y
@@ -107,9 +112,31 @@ function fireLaser()
 					end
 				end
 				
-				local x2 = (5*reticle.x-(4*x1))/(1)
-				local y2 = (5*reticle.y-(4*y1))/(1)
-				transition.to( newLaser, {x=x2, y=y2, time=length*2,
+				--[[local y2 = player.y 
+				local x2 = player.x 
+			
+				local length = math.sqrt((reticle.x-x2)^2+(reticle.y-y2)^2)
+				local degrees = math.deg(math.atan(math.abs(reticle.y-y2)/math.abs(reticle.x-x2)))
+				if (reticle.y<y2) then
+					if(reticle.x>x2) then
+						gunInHand.roataion = degrees+90
+					else
+						gunInHand.rotation = 180+degrees-90
+					end
+				end
+				if (reticle.y>=y2) then
+					if(reticle.x>x2) then
+					--SouthEast
+						gunInHand.rotation = 360-degrees+90
+					else
+					--SouthWest
+						gunInHand.rotation = degrees+90
+					end
+				end]]--
+				
+				local x3 = (5*reticle.x-(4*x1))/(1)
+				local y3 = (5*reticle.y-(4*y1))/(1)
+				transition.to( newLaser, {x=x3, y=y3, time=length*2,
 					onComplete = function()display.remove(newLaser)end
 				})
 				
