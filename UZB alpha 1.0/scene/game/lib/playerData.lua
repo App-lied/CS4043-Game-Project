@@ -9,9 +9,10 @@ function M.new(instance, options)
 	
 	local parent = instance.parent
 	local x, y = instance.x, instance.y
+	
 	local doubleJump = 1
 	
-	instance = display.newImageRect("scene/game/img/square.png", 50, 50)
+	instance = display.newImage("scene/game/img/right/mc.png")
 	instance.x, instance.y = x, y
 	instance.isVisible = true
 	
@@ -21,9 +22,29 @@ function M.new(instance, options)
 	physics.addBody(instance, "dynamic", {bounce = 0.0, density = 2.0})
 	instance.isFixedRotation = true
 	
+	local sheetData1 = {width = 150, height = 418, numFrames=10, sheetContentWidth = 750, sheetContentHeight = 836}
+	local sheet1 = graphics.newImageSheet("scene/game/img/right/right sprite.png", sheetData1)
+	local sheetData2 = {width = 150, height = 418, numFrames=10, sheetContentWidth = 750, sheetContentHeight = 836}
+	local sheet2 = graphics.newImageSheet("scene/game/img/left/left sprite.png", sheetData2)
 	
+	local sequenceData = {
+			{name = "walk right", sheet = sheet1, frames={ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, time = 1000},
+			{name = "walk left", sheet = sheet2, frames={ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, time = 1000}
+			}
+			
+	local animationLeft = display.newSprite(sheet2, sequenceData)
+	local animationRight = display.newSprite(sheet1, sequenceData)
+	animationLeft.isVisible = false
+	animationRight.isVisible = false
 	aIsPressed = false
 	dIsPressed = false
+	
+	local gunInHandRight = display.newImage("scene/game/img/right/ruger.png")
+	gunInHandRight.x, gunInHandRight.y = instance.x + 25, instance.y - 80
+	gunInHandRight.isVisible = true
+	local gunInHandLeft = display.newImage("scene/game/img/left/ruger.png")
+	gunInHandLeft.x, gunInHandLeft.y = instance.x - 25, instance.y - 80
+	gunInHandLeft.isVisible = false
 	
 	local function key(event)
 		
@@ -33,18 +54,32 @@ function M.new(instance, options)
 			
 		if (phase == "down") then
 			if (name == "a") then
-				instance:setLinearVelocity(-900, 0)
+				instance:setLinearVelocity(-9000, 0)
 				aIsPressed = true
-				instance2.isVisible = true
+				instance2.isVisible = false
 				instance.isVisible = false
+				animationLeft:play()
+				animationRight:pause()
+				animationLeft.isVisible = true
+				animationRight.isVisible = false
 				instance2.x, instance2.y = instance.x, instance.y
+				animationLeft.x, animationLeft.y = instance.x, instance.y
+				gunInHandRight.isVisible = false
+				gunInHandLeft.isVisible = true
 			elseif (name == "d") then
-				instance:setLinearVelocity(900, 0)
+				instance:setLinearVelocity(9000, 0)
 				dIsPressed = true
 				instance2.isVisible = false
-				instance.isVisible = true
+				instance.isVisible = false
+				animationRight:play()
+				animationLeft:pause()
+				animationLeft.isVisible = false
+				animationRight.isVisible = true
 				instance2.x, instance2.y = instance.x, instance.y
-			elseif (event.keyName == "w" ) then
+				animationRight.x, animationRight.y = instance.x, instance.y
+				gunInHandRight.isVisible = true
+				gunInHandLeft.isVisible = false
+			elseif (name == "w" ) then
 				instance:jump()
 			end
 		return true
@@ -52,9 +87,13 @@ function M.new(instance, options)
 		if (phase == "up") then
 			if (name == "a") then 
 			aIsPressed = false
+			animationRight:pause()
+			animationLeft:pause()
 			end
 			if (name == "d") then 
 			dIsPressed = false
+			animationRight:pause()
+			animationLeft:pause()
 			end
 		end
 		if not(dIsPressed or aIsPressed ) then
@@ -81,11 +120,8 @@ function M.new(instance, options)
 		local phase = event.phase
 		local other = event.other
 		local vx, vy = self:getLinearVelocity()
-	
-		if (phase == "began") then
-			if (self.jumping and vy > 0) then
-				self.jumping = false
-			end
+		if not (self.jumping) then
+			doubleJump = 1
 		end
 	end
 	
@@ -99,4 +135,3 @@ function M.new(instance, options)
 end
 
 return M
-	
