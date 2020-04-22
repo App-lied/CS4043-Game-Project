@@ -9,6 +9,8 @@ local composer = require( "composer" )
 local scene = composer.newScene()
 local backGroup = display.newGroup()
 local text = display.newGroup()
+local mute = 0
+local ping = audio.loadStream("pistol_reload.wav")
 sceneTest=3
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
@@ -74,7 +76,7 @@ function scene:create( event )
     pressEasy:setFillColor(0.5, 0, 1)
     pressEasy.alpha = 0.75
     pressEasy:scale( xScale, yScale )
-    pressEasy:addEventListener( "tap", muteMusic )
+    pressEasy:addEventListener( "tap", Mute )
     sceneGroup:insert(pressEasy)
 
     hard = display.newText(text, "CONTROLS", 120+xpush, 70+ypush, 250, 100, "Helvetica", 44)
@@ -147,35 +149,21 @@ function scene:destroy( event )
 
 end
 
-function gotoSettings()
-  composer.gotoScene( "Settings", {time=0, effect="fade"} )
-end
-
-function gotoDifficulty()
-  composer.gotoScene( "Difficulty", {time=0, effect="fade"} )
-end
-
-function gotoEasy()
-  composer.gotoScene( "HighScore", {time=100, effect="crossFade"} )
-  --DifficultyTest = 1
-  --easy
-end
-
-function gotoNormal()
-  --composer.gotoScene( "MainGame", {time=100, effect="crossFade"} )
-  --DifficultyTest = 2
-  --normal
-  print("normal")
-end
-
-function gotoHard()
-  --composer.gotoScene( "MainGame", {time=100, effect="crossFade"} )
-  --DifficultyTest = 3
-  --hard
-  print("hard")
+function Mute()
+  audio.play(ping)
+  if (mute==0) then
+    print("BRBRBRBRB")
+    audio.setVolume(0)
+    mute = 1
+  else
+    print("ALPHA")
+    audio.setVolume(1)
+    mute = 0
+  end
 end
 
 function muteMusic()
+  audio.play(ping)
   if (musicStop==0) then
     print(0)
     audio.stop( 1 )
@@ -190,6 +178,7 @@ function muteMusic()
 end
 
 function gotoStartUp()
+  audio.play(ping)
   composer.gotoScene( "Start-Up", {time=0, effect="fade"} )
 end
 

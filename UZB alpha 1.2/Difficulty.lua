@@ -10,6 +10,8 @@ local DifficultyScene = composer.newScene()
 local backGroup = display.newGroup()
 local text = display.newGroup()
 sceneTest=2
+local ping = audio.loadStream("pistol_reload.wav")
+local ping2 = audio.loadStream( "ping.wav")
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -147,24 +149,28 @@ end
 function gotoEasy()
   composer.gotoScene( "game", {time=100, effect="crossFade"} )
   DifficultyTest = 1
+  audio.play(ping2)
   --easy
 end
 
 function gotoNormal()
   composer.gotoScene( "game", {time=100, effect="crossFade"} )
   DifficultyTest = 2
+  audio.play(ping2)
   --normal
   print("normal")
 end
 
 function gotoHard()
-  composer.gotoScene( "game", {time=100, effect="crossFade"} )
+  --composer.gotoScene( "game", {time=100, effect="crossFade"} )
   DifficultyTest = 3
+  audio.play(ping2)
   --hard
   print("hard")
 end
 
 function gotoStartUp()
+  audio.play(ping)
   composer.gotoScene( "Start-Up", {time=0, effect="fade"} )
 end
 

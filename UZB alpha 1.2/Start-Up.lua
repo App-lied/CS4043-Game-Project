@@ -34,6 +34,8 @@ local xScale = 2.5
 local yScale = 2.5
 local xpush = 200
 local ypush = 300
+local ping = audio.loadStream("pistol_reload.wav")
+
 function scene:create( event )
 
     local sceneGroup = self.view
@@ -142,46 +144,15 @@ local function EnterCoin()
 end
 
 function gotoSettings()
+  audio.play(ping)
   composer.gotoScene( "Settings", {time=0, effect="fade"} )
 end
 
 function gotoDifficulty()
+  audio.play(ping)
   composer.gotoScene( "Difficulty", {time=0, effect="fade"} )
 end
 
-function gotoEasy()
-  composer.gotoScene( "HighScore", {time=100, effect="crossFade"} )
-  --DifficultyTest = 1
-  --easy
-end
-
-function gotoNormal()
-  --composer.gotoScene( "MainGame", {time=100, effect="crossFade"} )
-  --DifficultyTest = 2
-  --normal
-  print("normal")
-end
-
-function gotoHard()
-  --composer.gotoScene( "MainGame", {time=100, effect="crossFade"} )
-  --DifficultyTest = 3
-  --hard
-  print("hard")
-end
-
-function muteMusic()
-  if (musicStop==0) then
-    print(0)
-    audio.stop( 1 )
-    musicStop = 1
-  else
-    local backgroundMusic1 = audio.loadStream( "try out 2.wav" )
-    audio.play( backgroundMusic1, { channel=1, loops=-1 } )
-    print(1)
-    audio.play( 1 )
-    musicStop = 0
-  end
-end
 
 -- -----------------------------------------------------------------------------------
 -- Scene event function listeners
