@@ -2,10 +2,11 @@ local composer = require("composer")
 local playerData = require("scene.game.lib.playerData")
 local gunData = require("scene.game.lib.gunData")
 local mapData = require("scene.game.lib.mapData")
+local zombieData = require("scene.game.lib.zombieData")
 local scoreData = require("scene.game.lib.scoreData")
 local physics = require("physics")
 
-local player, map, reticle, loadBall, leftClickIsPressed, canFireSemiAutomatic
+local player, map, reticle, loadBall, leftClickIsPressed, canFireSemiAutomatic, z1
 
 local scene = composer.newScene()
 
@@ -18,6 +19,9 @@ function scene:create(event)
 	
 	player = playerData.new({x = display.contentCenterX, y = display.contentCenterY}, {})
 	table.insert(map, player)
+	
+	z1 = zombieData.new({room = 2})
+	table.insert(map, z1)
 	
 	reticle = display.newImageRect("scene/game/img/reticle.png", 50, 50)
 	reticle.x = display.contentCenterX
@@ -116,11 +120,13 @@ local function enterFrame(event)
 	
 	local elapsed = event.time
 	
-	if player and player.x and player.y then
+	if player and player.x and player.y and not player.isDead then
 		local x, y = player:localToContent( 0, 0 )
 		x, y = display.contentCenterX - x, display.contentCenterY - y
 		for i = #map, 1, -1 do
-			map[i].x, map[i].y = map[i].x + x, map[i].y + y
+			if not (map[i].isDead) then
+				map[i].x, map[i].y = map[i].x + x, map[i].y + y
+			end
 		end
 	end
 	
