@@ -8,8 +8,8 @@ function M.new(gun, options)
 	
 	local instance = {}
 	
-	local x, y = options.x, options.y
-	local name, width, height = options.name or "", options.width, options.height
+	local x, y = options.x or 0, options.y or 0
+	local name, width, height = options.name or "", options.width or 0, options.height or 0
 	local gunName = gun.name
 	local price = options.price or 1000
 	

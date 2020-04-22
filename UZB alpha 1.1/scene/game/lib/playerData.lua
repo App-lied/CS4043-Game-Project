@@ -12,6 +12,7 @@ function M.new(instance, options)
 	
 	instance = display.newImageRect("scene/game/img/square.png", 50, 50)
 	instance.x, instance.y = x, y
+	instance.isDead = false
 	
 	physics.addBody(instance, "dynamic", {bounce = 0.0, density = 2.0})
 	instance.isFixedRotation = true
@@ -87,6 +88,11 @@ function M.new(instance, options)
 		if (left == 0 and right == 0 and vy == 0) then
 			instance:setLinearVelocity(0, 0)
 		end
+	end
+	
+	function instance:die()
+		self.isDead = true
+		self:finalize()
 	end
 	
 	function instance:start()

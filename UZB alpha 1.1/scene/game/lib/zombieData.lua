@@ -8,18 +8,19 @@ function M.new(options)
 	
 	local instance = {}
 	
-	instance.health = options.health or 500
+	local health = options.health or 500
 	local room = options.room or math.random(9)
 	local points = options.points or 100
 	
 	instance = display.newImageRect("scene/game/img/redSquare.png", 50, 50)
 	physics.addBody(instance, "dynamic", {bounce = 0.0})
 	
+	instance.isDead = false
 	local x, y
 	
 	--spawn points
 	if room == 1 then x, y = math.random(3500, 4500), 100
-	elseif room == 2 then x, y = math.random(1500, 3000), 900
+	elseif room == 2 then x, y = 2000, 900
 	elseif room == 3 then x, y = math.random(3500, 4500), 900
 	elseif room == 4 then x, y = math.random(-100, 500), 1650
 	elseif room == 5 then x, y = math.random(1500, 3000), 1850
@@ -41,16 +42,18 @@ function M.new(options)
 	end
 	
 	function instance:damage()
-		self.health = self.health - currentGun:getDamage()
+		health = health - currentGun.damage
 		
-		if (self.health < 1) then
+		if (health < 1) then
 			self:die()
 		end
 	end
 	
 	function instance:die()
+		self.isDead = true
 		scene.score:add(points)
 		self:removeSelf()
+		self:finalize()
 	end
 	
 	function instance:finalize(event)
