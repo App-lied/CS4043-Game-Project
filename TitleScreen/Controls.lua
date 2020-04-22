@@ -1,15 +1,12 @@
 -----------------------------------------------------------------------------------------
 --
--- Difficulty.lua
+-- main.lua
 --
 -----------------------------------------------------------------------------------------
-
 local composer = require( "composer" )
 
-local DifficultyScene = composer.newScene()
-local backGroup = display.newGroup()
-local text = display.newGroup()
-sceneTest=2
+local scene = composer.newScene()
+
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -23,60 +20,40 @@ sceneTest=2
 -- -----------------------------------------------------------------------------------
 
 -- create()
-local background
-local screen
-local normal
-local pressNormal
-local easy
-local pressEasy
-local hard
-local pressHard
-function DifficultyScene:create( event )
+function scene:create( event )
 
-    local DifficultySceneGroup = self.view
+    local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
     background = display.newImageRect(backGroup, "Arcade.png", 792, 944)
     background.x = 128
     background.y = 236
-    DifficultySceneGroup:insert(background)
+    sceneGroup:insert(background)
 
     screen = display.newImageRect(backGroup, "thumbnail.png", 436, 300)
     screen.x = 135
     screen.y = 160
     screen.alpha = 0.75
-    DifficultySceneGroup:insert(screen)
+    sceneGroup:insert(screen)
 
-    normal = display.newText(text, "NORMAL", 168, 190, 200, 100, "Helvetica", 24)
-    normal:setFillColor(1, 1, 0)
-    DifficultySceneGroup:insert(normal)
-
-    pressNormal = display.newRoundedRect(text, 118, 155, 120, 30, 25)
-    pressNormal:setFillColor(0.5, 0, 1)
-    DifficultySceneGroup:insert(pressNormal)
-
-    easy = display.newText(text, "EASY", 185, 150, 200, 100, "Helvetica", 24)
-    easy:setFillColor(1, 1, 0)
-    DifficultySceneGroup:insert(easy)
-
-    pressEasy = display.newRoundedRect(text, 118, 115, 120, 30, 25)
-    pressEasy:setFillColor(0.5, 0, 1)
-    DifficultySceneGroup:insert(pressEasy)
-
-    hard = display.newText(text, "HARD", 185, 230, 200, 100, "Helvetica", 24)
+    hard = display.newText(text, "CONTROLS", 160, 150, 200, 100, "Helvetica", 20)
     hard:setFillColor(1, 1, 0)
-    DifficultySceneGroup:insert(hard)
+    sceneGroup:insert(hard)
 
-    pressHard = display.newRoundedRect(text, 118, 192, 120, 30, 25)
+    controls = display.newText(text, "W/SPACE: jump \nA: left\nD: right\nMOUSE: Aim\nMOUSE LEFT CLICK: Shoot", 140, 170, 200, 100, "Helvetica", 12)
+    controls:setFillColor(1, 1, 0)
+    sceneGroup:insert(controls)
+
+    pressHard = display.newRoundedRect(text, 118, 152, 190, 110, 25)
     pressHard:setFillColor(0.5, 0, 1)
-    DifficultySceneGroup:insert(pressHard)
+    sceneGroup:insert(pressHard)
 
     local GoBack = display.newText(text, "GO BACK", 69, 309, 200, 100, "Helvetica", 12)
     GoBack:setFillColor(1, 1, 0)
-    DifficultySceneGroup:insert(GoBack)
+    sceneGroup:insert(GoBack)
 
     local pressGoBack = display.newRoundedRect(text, 0, 265, 90, 20, 25)
     pressGoBack:setFillColor(0.5, 0, 1)
-    DifficultySceneGroup:insert(pressGoBack)
+    sceneGroup:insert(pressGoBack)
 
     pressEasy:toBack()
     pressHard:toBack()
@@ -87,7 +64,7 @@ end
 
 
 -- show()
-function DifficultyScene:show( event )
+function scene:show( event )
 
     local sceneGroup = self.view
     local phase = event.phase
@@ -97,12 +74,13 @@ function DifficultyScene:show( event )
         sceneTest=2
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
+
     end
 end
 
 
 -- hide()
-function DifficultyScene:hide( event )
+function scene:hide( event )
 
     local sceneGroup = self.view
     local phase = event.phase
@@ -112,12 +90,13 @@ function DifficultyScene:hide( event )
 
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
+
     end
 end
 
 
 -- destroy()
-function DifficultyScene:destroy( event )
+function scene:destroy( event )
 
     local sceneGroup = self.view
     -- Code here runs prior to the removal of scene's view
@@ -125,15 +104,13 @@ function DifficultyScene:destroy( event )
 end
 
 
-
-
 -- -----------------------------------------------------------------------------------
 -- Scene event function listeners
 -- -----------------------------------------------------------------------------------
-DifficultyScene:addEventListener( "create", DifficultyScene )
-DifficultyScene:addEventListener( "show", DifficultyScene )
-DifficultyScene:addEventListener( "hide", DifficultyScene )
-DifficultyScene:addEventListener( "destroy", DifficultyScene )
+scene:addEventListener( "create", scene )
+scene:addEventListener( "show", scene )
+scene:addEventListener( "hide", scene )
+scene:addEventListener( "destroy", scene )
 -- -----------------------------------------------------------------------------------
 
-return DifficultyScene
+return scene

@@ -177,7 +177,7 @@ local function mouse(event)
     end
     if (sceneTest==2) then
       if (event.x<=167 and event.x>=65 and event.y>=100 and event.y<=126) then
-          --composer.gotoScene( "MainGame", {time=100, effect="crossFade"} )
+          composer.gotoScene( "HighScore", {time=100, effect="crossFade"} )
           --DifficultyTest = 1
           --easy
           print("easy")
