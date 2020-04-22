@@ -14,30 +14,21 @@ function M.new(instance, options)
 	
 	instance = display.newImage("scene/game/img/right/mc.png")
 	instance.x, instance.y = x, y
-	instance.isVisible = true
-	
-	instance2 = display.newImage("scene/game/img/left/mc.png")
-	instance2.isVisible = false
+	instance.isVisible = false
 	
 	physics.addBody(instance, "dynamic", {bounce = 0.0, density = 2.0})
 	instance.isFixedRotation = true
 	
-	local sheetData1 = {width = 150, height = 418, numFrames=10, sheetContentWidth = 750, sheetContentHeight = 836}
-	local sheet1 = graphics.newImageSheet("scene/game/img/right/right sprite.png", sheetData1)
-	local sheetData2 = {width = 150, height = 418, numFrames=10, sheetContentWidth = 750, sheetContentHeight = 836}
-	local sheet2 = graphics.newImageSheet("scene/game/img/left/left sprite.png", sheetData2)
+	local sheetData = {width = 150, height = 418, numFrames=20, sheetContentWidth = 750, sheetContentHeight = 1672}
+	local sheet1 = graphics.newImageSheet( "scene/game/img/sprite sheet mc.png", sheetData )
 	
 	local sequenceData = {
 			{name = "walk right", sheet = sheet1, frames={ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, time = 1000},
-			{name = "walk left", sheet = sheet2, frames={ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, time = 1000}
+			{name = "walk left", sheet = sheet1, frames={ 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, time = 1000}
 			}
 			
-	local animationLeft = display.newSprite(sheet2, sequenceData)
-	local animationRight = display.newSprite(sheet1, sequenceData)
-	animationLeft.isVisible = false
-	animationRight.isVisible = false
-	aIsPressed = false
-	dIsPressed = false
+	local animation = display.newSprite(sheet1, sequenceData)
+	animation.x, animation.y = instance.x, instance.y
 	
 	local gunInHandRight = display.newImage("scene/game/img/right/ruger.png")
 	gunInHandRight.x, gunInHandRight.y = instance.x + 25, instance.y - 80
@@ -47,7 +38,6 @@ function M.new(instance, options)
 	gunInHandLeft.isVisible = false
 	
 	local function key(event)
-		
 		local phase = event.phase
 		local name = event.keyName
 		
@@ -56,27 +46,15 @@ function M.new(instance, options)
 			if (name == "a") then
 				instance:setLinearVelocity(-9000, 0)
 				aIsPressed = true
-				instance2.isVisible = false
-				instance.isVisible = false
-				animationLeft:play()
-				animationRight:pause()
-				animationLeft.isVisible = true
-				animationRight.isVisible = false
-				instance2.x, instance2.y = instance.x, instance.y
-				animationLeft.x, animationLeft.y = instance.x, instance.y
+				animation:setSequence("walk left")
+				animation:play()
 				gunInHandRight.isVisible = false
 				gunInHandLeft.isVisible = true
 			elseif (name == "d") then
 				instance:setLinearVelocity(9000, 0)
 				dIsPressed = true
-				instance2.isVisible = false
-				instance.isVisible = false
-				animationRight:play()
-				animationLeft:pause()
-				animationLeft.isVisible = false
-				animationRight.isVisible = true
-				instance2.x, instance2.y = instance.x, instance.y
-				animationRight.x, animationRight.y = instance.x, instance.y
+				animation:setSequence("walk right")
+				animation:play()
 				gunInHandRight.isVisible = true
 				gunInHandLeft.isVisible = false
 			elseif (name == "w" ) then
@@ -87,13 +65,11 @@ function M.new(instance, options)
 		if (phase == "up") then
 			if (name == "a") then 
 			aIsPressed = false
-			animationRight:pause()
-			animationLeft:pause()
+			animation:pause()
 			end
 			if (name == "d") then 
 			dIsPressed = false
-			animationRight:pause()
-			animationLeft:pause()
+			animation:pause()
 			end
 		end
 		if not(dIsPressed or aIsPressed ) then
