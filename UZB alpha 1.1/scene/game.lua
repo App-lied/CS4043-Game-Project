@@ -6,22 +6,20 @@ local zombieData = require("scene.game.lib.zombieData")
 local scoreData = require("scene.game.lib.scoreData")
 local physics = require("physics")
 
-local player, map, reticle, loadBall, leftClickIsPressed, canFireSemiAutomatic, z1
+local player, map, reticle, loadBall, leftClickIsPressed, canFireSemiAutomatic
 
 local scene = composer.newScene()
 
 function scene:create(event)
 	
 	physics.start()
-	physics.setGravity(0, 15)
+	physics.setGravity(0, 30)
 	
 	map = mapData.new()
 	
 	player = playerData.new({x = display.contentCenterX, y = display.contentCenterY}, {})
 	table.insert(map, player)
 	
-	z1 = zombieData.new({room = 2})
-	table.insert(map, z1)
 	
 	reticle = display.newImageRect("scene/game/img/reticle.png", 50, 50)
 	reticle.x = display.contentCenterX
@@ -80,12 +78,19 @@ function scene:create(event)
 		end
 	end
 	
+	
+	function startWave()
+		scene.score:updateWave()
+		scene.score:numberToSpawn()
+		map:spawnWave(scene.score:getSpawnNumber())
+	end
+	
 	gunList = {}
 	table.insert(gunList, gunData.new({clip = 7, reserve = 56, fireSpeed = 200, reloadSpeed = 500, damage = 200, name = "ruger", isSemiAuto = true, width = 303, height = 196}))
 	table.insert(gunList, gunData.new({clip = 32, reserve = 96, fireSpeed = 50, reloadSpeed = 750, damage = 200, name = "uzi", isSemiAuto = false, width = 316, height = 267}))
 	table.insert(gunList, gunData.new({clip = 30, reserve = 120, fireSpeed = 100, reloadSpeed = 750, damage = 250, name = "ak47", isSemiAuto = false, width = 969, height = 293}))
 	table.insert(gunList, gunData.new({clip = 6, reserve = 30, fireSpeed = 600, reloadSpeed = 2000, damage = 1000, name = "mossberg500", isSemiAuto = true, width = 1004, height = 208}))
-	table.insert(gunList, gunData.new({clip = 6, reserve = 30, fireSpeed = 1000, reloadSpeed = 2000, damage = 1000, name = "m40", isSemiAuto = true, width = 1066, height = 230}))
+	table.insert(gunList, gunData.new({clip = 6, reserve = 30, fireSpeed = 1000, reloadSpeed = 2000, damage = 1000, name = "m40", isSemiAuto = true, canPierce = true, width = 1066, height = 230}))
 	table.insert(gunList, gunData.new({clip = 100, reserve = 500, fireSpeed = 25, reloadSpeed = 2000, damage = 100, name = "m134", isSemiAuto = false, width = 1084, height = 301}))
 	table.insert(gunList, gunData.new({clip = 20, reserve = 100, fireSpeed = 50, reloadSpeed = 750, damage = 300, name = "m16a4", isSemiAuto = true, width = 1083, height = 249}))
 	table.insert(gunList, gunData.new({clip = 70, reserve = 210, fireSpeed = 75, reloadSpeed = 900, damage = 300, name = "ppsh41", isSemiAuto = false, width = 858, height = 233}))
@@ -130,12 +135,18 @@ local function enterFrame(event)
 		end
 	end
 	
+	if scene.score:getSpawnNumber() == 0 then
+		startWave()
+	end
 end
 
 function scene:show(event)
 
 	local phase = event.phase
 	if ( phase == "will" ) then
+		for i = #map, 1, -1 do
+			map[i].isVisible = true
+		end
 		Runtime:addEventListener( "enterFrame", enterFrame )
 		Runtime:addEventListener("mouse", mouse)
 		gameLoopTimer = timer.performWithDelay(17, fireLaser, 0)
@@ -149,7 +160,9 @@ function scene:hide(event)
 
 	local phase = event.phase
 	if ( phase == "will" ) then
-	
+		for i = #map, 1, -1 do
+			map[i].isVisible = false
+		end
 	elseif ( phase == "did" ) then
 		Runtime:removeEventListener("enterFrame", enterFrame)
 		Runtime:removeEventListener("mouse", mouse)
