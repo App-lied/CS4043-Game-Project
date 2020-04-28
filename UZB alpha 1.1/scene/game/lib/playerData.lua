@@ -10,14 +10,14 @@ function M.new(instance, options)
 	local parent = instance.parent
 	local x, y = instance.x, instance.y
 	
-	instance = display.newImageRect("scene/game/img/square.png", 50, 50)
+	instance = display.newImageRect("scene/game/img/square.png", 75, 75)
 	instance.x, instance.y = x, y
 	instance.isDead = false
 	
 	physics.addBody(instance, "dynamic", {bounce = 0.0, density = 2.0})
 	instance.isFixedRotation = true
 	
-	local max, acceleration, left, right = 1000, 800, 0, 0
+	local max, acceleration, left, right = 700, 8500, 0, 0
 	local lastEvent = {}
 	
 	local function key(event)
@@ -55,9 +55,13 @@ function M.new(instance, options)
 
 
 	function instance:jump()
+	local vx, vy = self:getLinearVelocity()
 		if not self.jumping then
-			self:applyLinearImpulse(0, -100)
+			self:applyLinearImpulse(0, -304)
 			self.jumping = true
+		elseif self.jumping and not self.doubleJump then
+			self:setLinearVelocity(vx, -640)
+			self.doubleJump = true
 		end
 	end
 	
@@ -70,9 +74,20 @@ function M.new(instance, options)
 			self:die()
 		end
 		
-		if (phase == "began") then
+		if (phase == "began") and not (other.name == "ladder") then
 			if (self.jumping and vy > 0) then
 				self.jumping = false
+				self.doubleJump = false
+			end
+		end
+	end
+	
+	function instance:preCollision(event)
+		local other = event.other
+		local y1, y2 = self.y + 20, other.y - other.height/2
+		if event.contact and (y1 > y2) then
+			if other.isFloating then
+				event.contact.isEnabled = false
 			end
 		end
 	end
@@ -97,10 +112,12 @@ function M.new(instance, options)
 	
 	function instance:start()
 		Runtime:addEventListener("key", key)
+		Runtime:addEventListener("enterFrame", enterFrame)
 	end
 	
 	function instance:pause()
 		Runtime:removeEventListener("key", key)
+		Runtime:removeEventListener("enterFrame", enterFrame)
 	end
 	
 	function instance:finalize()
@@ -109,7 +126,7 @@ function M.new(instance, options)
 		Runtime:removeEventListener("key", key)	
 	end
 	
-	Runtime:addEventListener("enterFrame", enterFrame)
+	instance:addEventListener("preCollision")
 	instance:addEventListener("collision")
 	instance:addEventListener("finalize")
 	

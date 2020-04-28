@@ -14,6 +14,7 @@ function M.new(options)
 	gun.ammo = options.clip or 0
 	gun.range = options.range or 0
 	gun.isSemiAuto = options.isSemiAuto or false
+	gun.canPierce = options.canPierce or false
 	gun.isReloading = false
 	
 	gun.fullReserve = options.reserve
